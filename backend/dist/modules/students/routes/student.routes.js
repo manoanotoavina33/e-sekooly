@@ -1,0 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.studentRouter = void 0;
+const express_1 = require("express");
+const authenticate_1 = require("../../../core/middlewares/authenticate");
+const authorize_1 = require("../../../core/middlewares/authorize");
+const validate_1 = require("../../../core/middlewares/validate");
+const student_controller_1 = require("../controllers/student.controller");
+const student_validation_1 = require("../validations/student.validation");
+exports.studentRouter = (0, express_1.Router)();
+exports.studentRouter.use(authenticate_1.authenticate);
+exports.studentRouter.get("/", (0, authorize_1.authorize)("students.read"), (0, validate_1.validateQuery)(student_validation_1.listStudentsQuerySchema), student_controller_1.studentController.list);
+exports.studentRouter.get("/:id", (0, authorize_1.authorize)("students.read"), student_controller_1.studentController.getById);
+exports.studentRouter.post("/", (0, authorize_1.authorize)("students.create"), (0, validate_1.validateBody)(student_validation_1.createStudentSchema), student_controller_1.studentController.create);
+exports.studentRouter.patch("/:id", (0, authorize_1.authorize)("students.update"), (0, validate_1.validateBody)(student_validation_1.updateStudentSchema), student_controller_1.studentController.update);
+exports.studentRouter.post("/:id/change-class", (0, authorize_1.authorize)("students.update"), (0, validate_1.validateBody)(student_validation_1.changeClassSchema), student_controller_1.studentController.changeClass);
+exports.studentRouter.post("/:id/suspend", (0, authorize_1.authorize)("students.discipline"), (0, validate_1.validateBody)(student_validation_1.suspendStudentSchema), student_controller_1.studentController.suspend);
+exports.studentRouter.post("/:id/reactivate", (0, authorize_1.authorize)("students.discipline"), student_controller_1.studentController.reactivate);
+exports.studentRouter.delete("/:id", (0, authorize_1.authorize)("students.delete"), student_controller_1.studentController.delete);
+//# sourceMappingURL=student.routes.js.map

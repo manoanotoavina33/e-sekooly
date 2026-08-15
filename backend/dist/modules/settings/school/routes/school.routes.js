@@ -1,0 +1,19 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.schoolRouter = void 0;
+const express_1 = require("express");
+const authenticate_1 = require("../../../../core/middlewares/authenticate");
+const authorize_1 = require("../../../../core/middlewares/authorize");
+const validate_1 = require("../../../../core/middlewares/validate");
+const school_controller_1 = require("../controllers/school.controller");
+const school_validation_1 = require("../validations/school.validation");
+exports.schoolRouter = (0, express_1.Router)();
+exports.schoolRouter.use(authenticate_1.authenticate);
+exports.schoolRouter.get("/:id", (0, authorize_1.authorize)("settings.read"), school_controller_1.schoolController.getById);
+exports.schoolRouter.patch("/:id", (0, authorize_1.authorize)("settings.manage"), (0, validate_1.validateBody)(school_validation_1.updateSchoolSchema), school_controller_1.schoolController.update);
+exports.schoolRouter.post("/school-years", (0, authorize_1.authorize)("settings.manage"), (0, validate_1.validateBody)(school_validation_1.createSchoolYearSchema), school_controller_1.schoolController.createSchoolYear);
+exports.schoolRouter.post("/:id/school-years/:yearId/set-current", (0, authorize_1.authorize)("settings.manage"), school_controller_1.schoolController.setCurrentSchoolYear);
+exports.schoolRouter.post("/semesters", (0, authorize_1.authorize)("settings.manage"), (0, validate_1.validateBody)(school_validation_1.createSemesterSchema), school_controller_1.schoolController.createSemester);
+exports.schoolRouter.get("/:id/settings", (0, authorize_1.authorize)("settings.read"), school_controller_1.schoolController.listSettings);
+exports.schoolRouter.put("/settings", (0, authorize_1.authorize)("settings.manage"), (0, validate_1.validateBody)(school_validation_1.upsertSystemSettingSchema), school_controller_1.schoolController.upsertSetting);
+//# sourceMappingURL=school.routes.js.map
