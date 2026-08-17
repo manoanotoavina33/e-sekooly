@@ -12,7 +12,14 @@ const schema = z.object({
 });
 type FormValues = z.infer<typeof schema>;
 
-export function FeeCategoryFormModal({ open, onClose, schoolId }: { open: boolean; onClose: () => void; schoolId: string }) {
+const FEE_SUGGESTIONS: Record<string, string[]> = {
+  PRIMARY: ["Frais de scolarité", "Frais d'inscription", "Cantine", "Transport", "Sorties scolaires"],
+  COLLEGE: ["Frais de scolarité", "Frais d'inscription", "Cantine", "Transport", "Sorties scolaires", "Options"],
+  LYCEE: ["Frais de scolarité", "Frais d'inscription", "Cantine", "Transport", "Sorties scolaires", "Bac", "Options"],
+  UNIVERSITE: ["Frais d'inscription", "Frais de scolarité", "Frais de dossier", "Carte d'étudiant", "Mémoire"],
+};
+
+export function FeeCategoryFormModal({ open, onClose, schoolId, suggestedNames }: { open: boolean; onClose: () => void; schoolId: string; suggestedNames?: string[] }) {
   const createCategory = useCreateFeeCategory();
   const {
     register,
@@ -30,7 +37,16 @@ export function FeeCategoryFormModal({ open, onClose, schoolId }: { open: boolea
   return (
     <Modal open={open} onClose={onClose} title="Nouvelle catégorie de frais">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <Input label="Nom" placeholder="Frais de scolarité" error={errors.name?.message} {...register("name")} />
+        <div className="flex flex-col gap-1.5">
+          <Input label="Nom" placeholder="Frais de scolarité" error={errors.name?.message} {...register("name")} list="fee-suggestions" />
+          {suggestedNames && suggestedNames.length > 0 && (
+            <datalist id="fee-suggestions">
+              {suggestedNames.map((n) => (
+                <option key={n} value={n} />
+              ))}
+            </datalist>
+          )}
+        </div>
         <Input label="Description (optionnel)" {...register("description")} />
 
         <div className="mt-2 flex justify-end gap-3">

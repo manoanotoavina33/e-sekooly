@@ -15,16 +15,25 @@ const schema = z.object({
 });
 type FormValues = z.infer<typeof schema>;
 
+const SUBJECT_SUGGESTIONS: Record<string, string[]> = {
+  PRIMARY: ["Français", "Mathématiques", "Découverte du monde", "Arts plastiques", "EPS", "Musique"],
+  COLLEGE: ["Français", "Mathématiques", "Histoire-Géographie", "SVT", "Physique-Chimie", "Arts plastiques", "EPS", "Musique", "Technologie"],
+  LYCEE: ["Français", "Mathématiques", "Histoire-Géographie", "Physique-Chimie", "SVT", "Philosophie", "Arts plastiques", "EPS", "NSI", "SES", "HGGSP"],
+  UNIVERSITE: ["Mathématiques", "Physique", "Informatique", "Droit", "Économie", "Médecine", "Langues", "Lettres"],
+};
+
 export function SubjectFormModal({
   open,
   onClose,
   schoolId,
   subject,
+  suggestedSubjects,
 }: {
   open: boolean;
   onClose: () => void;
   schoolId: string;
   subject?: Subject | null;
+  suggestedSubjects?: string[];
 }) {
   const createSubject = useCreateSubject();
   const updateSubject = useUpdateSubject();
@@ -61,7 +70,16 @@ export function SubjectFormModal({
   return (
     <Modal open={open} onClose={onClose} title={isEditing ? `Modifier la matière ${subject?.name}` : "Créer une matière"}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <Input label="Nom de la matière" placeholder="Mathématiques" error={errors.name?.message} {...register("name")} />
+        <div className="flex flex-col gap-1.5">
+          <Input label="Nom de la matière" placeholder="Mathématiques" error={errors.name?.message} {...register("name")} list="subject-suggestions" />
+          {suggestedSubjects && suggestedSubjects.length > 0 && (
+            <datalist id="subject-suggestions">
+              {suggestedSubjects.map((s) => (
+                <option key={s} value={s} />
+              ))}
+            </datalist>
+          )}
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <Input label="Coefficient" type="number" step="0.5" error={errors.coefficient?.message} {...register("coefficient")} />
           <Input label="Heures / semaine" type="number" error={errors.hoursPerWeek?.message} {...register("hoursPerWeek")} />

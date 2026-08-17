@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Modal } from "@/components/ui/Modal";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useSchool } from "@/features/settings/hooks/useSchoolSettings";
 import { cn } from "@/lib/utils";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -10,9 +11,27 @@ import { ClassRoom, useDeleteClassRoom, useClassRooms } from "./classrooms/hooks
 import { SubjectFormModal } from "./subjects/components/SubjectFormModal";
 import { Subject, useDeleteSubject, useSubjects } from "./subjects/hooks/useSubjects";
 
+const LEVEL_SUGGESTIONS: Record<string, string[]> = {
+  PRIMARY: ["CP", "CE1", "CE2", "CM1", "CM2"],
+  COLLEGE: ["6ème", "5ème", "4ème", "3ème"],
+  LYCEE: ["Seconde", "Première", "Terminale"],
+  UNIVERSITE: ["L1", "L2", "L3", "M1", "M2", "Doctorat"],
+};
+
+const SUBJECT_SUGGESTIONS: Record<string, string[]> = {
+  PRIMARY: ["Français", "Mathématiques", "Découverte du monde", "Arts plastiques", "EPS", "Musique"],
+  COLLEGE: ["Français", "Mathématiques", "Histoire-Géographie", "SVT", "Physique-Chimie", "Arts plastiques", "EPS", "Musique", "Technologie"],
+  LYCEE: ["Français", "Mathématiques", "Histoire-Géographie", "Physique-Chimie", "SVT", "Philosophie", "Arts plastiques", "EPS", "NSI", "SES", "HGGSP"],
+  UNIVERSITE: ["Mathématiques", "Physique", "Informatique", "Droit", "Économie", "Médecine", "Langues", "Lettres"],
+};
+
 export default function AcademicsPage() {
   const user = useAuthStore((s) => s.user);
   const schoolId = user?.schoolId ?? "";
+  const { data: school } = useSchool(schoolId);
+  const schoolTypeCodes = school?.schoolTypes.map((st) => st.schoolType.code) ?? [];
+  const suggestedLevels = schoolTypeCodes.flatMap((code) => LEVEL_SUGGESTIONS[code] ?? []);
+  const suggestedSubjects = schoolTypeCodes.flatMap((code) => SUBJECT_SUGGESTIONS[code] ?? []);
 
   const isUserAdmin = user?.roles.some((r) =>
     ["ADMIN", "SUPER_ADMIN", "DIRECTOR", "SECRETARY"].includes(r)
@@ -215,6 +234,7 @@ export default function AcademicsPage() {
         onClose={() => { setClassModalOpen(false); setSelectedClassRoom(null); }}
         schoolId={schoolId}
         classRoom={selectedClassRoom}
+        suggestedLevels={suggestedLevels}
       />
 
       {/* Subject Form Modal */}
@@ -223,6 +243,7 @@ export default function AcademicsPage() {
         onClose={() => { setSubjectModalOpen(false); setSelectedSubject(null); }}
         schoolId={schoolId}
         subject={selectedSubject}
+        suggestedSubjects={suggestedSubjects}
       />
 
       {/* Class Delete Confirmation Modal */}

@@ -27,7 +27,7 @@ export function useExamSessions(schoolId: string) {
 export function useCreateExamSession() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: { schoolId: string; label: string; type: ExamType; startDate: string; endDate: string }) => {
+    mutationFn: async (payload: { schoolId: string; label: string; semesterId: string; type: ExamType; startDate: string; endDate: string }) => {
       const { data } = await api.post("/exams/sessions", payload);
       return data.data as ExamSession;
     },

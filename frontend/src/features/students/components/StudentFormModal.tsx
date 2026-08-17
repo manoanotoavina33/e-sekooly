@@ -83,15 +83,16 @@ export function StudentFormModal({
 
   async function onSubmit(values: FormValues) {
     const classRoomId = values.classRoomId ? values.classRoomId : undefined;
-    const email = values.email ? values.email : undefined;
+    const { email, ...rest } = values;
+    const emailValue = isEditing && email ? email : undefined;
 
     if (isEditing && student) {
       await updateStudent.mutateAsync({
         id: student.id,
-        payload: { ...values, classRoomId, email },
+        payload: { ...rest, classRoomId, email: emailValue },
       });
     } else {
-      await createStudent.mutateAsync({ ...values, classRoomId, email, schoolId });
+      await createStudent.mutateAsync({ ...rest, classRoomId, schoolId });
     }
     reset();
     onClose();
@@ -165,7 +166,7 @@ export function StudentFormModal({
 
         <div className="grid grid-cols-2 gap-3">
           <Input label="Téléphone" {...register("phone")} />
-          <Input label="E-mail" error={errors.email?.message} {...register("email")} />
+          {isEditing && <Input label="E-mail" error={errors.email?.message} {...register("email")} />}
         </div>
 
         {!isEditing && (

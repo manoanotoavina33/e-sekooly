@@ -1,5 +1,6 @@
 import { Logo } from "@/components/ui/Logo";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useSchool } from "@/features/settings/hooks/useSchoolSettings";
 import { cn } from "@/lib/utils";
 import {
   BarChart3, BookOpen, Calendar, ClipboardList, GraduationCap, LayoutDashboard, Lock,
@@ -35,6 +36,8 @@ const NAV_ITEMS: NavItem[] = [
 
 export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const user = useAuthStore((s) => s.user);
+  const schoolId = user?.schoolId ?? "";
+  const { data: school } = useSchool(schoolId);
 
   return (
     <>
@@ -49,7 +52,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
         )}
       >
         <div className="flex items-center justify-between px-5 py-5">
-          <Logo />
+          <Logo src={school?.logoUrl ?? undefined} />
           <button onClick={onClose} className="lg:hidden text-slate-400">
             <X className="h-5 w-5" />
           </button>

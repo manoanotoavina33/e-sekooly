@@ -2,12 +2,20 @@
   "name": "e-sekooly-frontend",
   "version": "0.1.0",
   "private": true,
+  "description": "e-sekooly - Interface desktop Electron",
+  "author": "e-sekooly",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "vite",
+    "dev:backend": "cd ../backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend && npm run package",
+    "build:frontend": "tsc -b && vite build",
+    "build:backend": "cd ../backend && npm run build",
+    "package": "node scripts/package-electron.mjs",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "electron:build": "electron-builder --win --mac --linux"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -26,15 +34,66 @@
     "zod": "^3.23.8",
     "zustand": "^4.5.5"
   },
+  "main": "dist-electron/main.js",
+  "build": {
+    "appId": "com.esechooly.app",
+    "productName": "e-sekooly",
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "../backend/dist/**/*",
+      "../backend/uploads/**/*",
+      "../backend/prisma/**/*",
+      "../backend/.env"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend/dist",
+        "to": "backend/dist"
+      },
+      {
+        "from": "../backend/uploads",
+        "to": "backend/uploads"
+      },
+      {
+        "from": "../backend/.env",
+        "to": "backend/.env"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "public/logo.svg"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "public/logo.svg"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "public/logo.svg"
+    }
+  },
   "devDependencies": {
+    "@types/node": "^26.2.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^10.0.5",
+    "electron": "^43.4.0",
+    "electron-builder": "^26.15.3",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
     "vite": "^5.4.8",
-    "vite-plugin-pwa": "^0.20.5"
+    "vite-plugin-electron": "^1.1.1",
+    "vite-plugin-pwa": "^0.20.5",
+    "wait-on": "^9.1.0"
   }
 }

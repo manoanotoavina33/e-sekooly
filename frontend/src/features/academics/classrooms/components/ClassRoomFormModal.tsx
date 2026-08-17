@@ -22,11 +22,13 @@ export function ClassRoomFormModal({
   onClose,
   schoolId,
   classRoom,
+  suggestedLevels,
 }: {
   open: boolean;
   onClose: () => void;
   schoolId: string;
   classRoom?: ClassRoom | null;
+  suggestedLevels?: string[];
 }) {
   const createClassRoom = useCreateClassRoom();
   const updateClassRoom = useUpdateClassRoom();
@@ -60,11 +62,20 @@ export function ClassRoomFormModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Créer une classe">
+    <Modal open={open} onClose={onClose} title={classRoom ? "Modifier la classe" : "Créer une classe"}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-3">
           <Input label="Nom de la classe" placeholder="6ème A" error={errors.name?.message} {...register("name")} />
-          <Input label="Niveau" placeholder="6ème" error={errors.level?.message} {...register("level")} />
+          <div className="flex flex-col gap-1.5">
+            <Input label="Niveau" placeholder="6ème" error={errors.level?.message} {...register("level")} list="level-suggestions" />
+            {suggestedLevels && suggestedLevels.length > 0 && (
+              <datalist id="level-suggestions">
+                {suggestedLevels.map((l) => (
+                  <option key={l} value={l} />
+                ))}
+              </datalist>
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Input label="Filière" placeholder="Scientifique" {...register("track")} />

@@ -28,6 +28,7 @@ export interface School {
   website: string | null;
   currency: string;
   timezone: string;
+  schoolTypes: { schoolType: { code: string; label: string } }[];
   schoolYears: SchoolYear[];
 }
 
@@ -45,8 +46,21 @@ export function useSchool(schoolId: string) {
 export function useUpdateSchool(schoolId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: Partial<Pick<School, "name" | "shortName" | "address" | "phone" | "email" | "website" | "currency" | "timezone">>) => {
+    mutationFn: async (payload: Partial<Pick<School, "name" | "shortName" | "address" | "phone" | "email" | "website" | "currency" | "timezone">> & { schoolTypes?: string[] }) => {
       const { data } = await api.patch(`/schools/${schoolId}`, payload);
+      return data.data as School;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["school", schoolId] }),
+  });
+}
+
+export function useUploadLogo(schoolId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("logo", file);
+      const { data } = await api.post(`/schools/${schoolId}/upload-logo`, formData);
       return data.data as School;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["school", schoolId] }),
@@ -71,6 +85,21 @@ export function useSetCurrentSchoolYear(schoolId: string) {
       await api.post(`/schools/${schoolId}/school-years/${yearId}/set-current`);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["school", schoolId] }),
+  });
+}
+
+export interface SchoolCategory {
+  code: string;
+  label: string;
+}
+
+export function useSchoolCategories() {
+  return useQuery({
+    queryKey: ["school-categories"],
+    queryFn: async () => {
+      const { data } = await api.get("/schools/categories");
+      return data.data as SchoolCategory[];
+    },
   });
 }
 

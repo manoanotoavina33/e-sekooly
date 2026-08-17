@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useSchool } from "@/features/settings/hooks/useSchoolSettings";
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { Edit, Plus, Trash2 } from "lucide-react";
@@ -10,9 +11,19 @@ import { useState } from "react";
 import { EmployeeFormModal } from "./components/EmployeeFormModal";
 import { Employee, useDeleteEmployee, useEmployees } from "./hooks/useEmployees";
 
+const POSITION_SUGGESTIONS: Record<string, string[]> = {
+  PRIMARY: ["Instituteur", "Instituteur adjoint", "Directeur d'école", "Secrétaire"],
+  COLLEGE: ["Professeur", "Professeur principal", "Conseiller principal d'éducation", "Surveillant", "Secrétaire"],
+  LYCEE: ["Professeur", "Professeur principal", "Conseiller principal d'éducation", "Surveillant", "Secrétaire"],
+  UNIVERSITE: ["Professeur des universités", "Maître de conférences", "ATER", "Doctorant", "Secrétaire"],
+};
+
 export default function TeachersPage() {
   const user = useAuthStore((s) => s.user);
   const schoolId = user?.schoolId ?? "";
+  const { data: school } = useSchool(schoolId);
+  const schoolTypeCodes = school?.schoolTypes.map((st) => st.schoolType.code) ?? [];
+  const suggestedPositions = schoolTypeCodes.flatMap((code) => POSITION_SUGGESTIONS[code] ?? []);
 
   const isUserAdmin = user?.roles.some((r) =>
     ["ADMIN", "SUPER_ADMIN", "DIRECTOR"].includes(r)
@@ -85,27 +96,26 @@ export default function TeachersPage() {
       <Card className="overflow-x-auto p-0">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wide text-slate-400 dark:border-ink-700">
-              <th className="px-5 py-3 font-medium">Matricule</th>
-              <th className="px-5 py-3 font-medium">Nom complet</th>
-              <th className="px-5 py-3 font-medium">Poste</th>
-              <th className="px-5 py-3 font-medium">Département</th>
-              <th className="px-5 py-3 font-medium">Contrat</th>
-              <th className="px-5 py-3 font-medium">Statut</th>
-              {isUserAdmin && <th className="px-5 py-3 font-medium text-right">Actions</th>}
-            </tr>
+              <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wide text-slate-400 dark:border-ink-700">
+                <th className="px-5 py-3 font-medium">Matricule</th>
+                <th className="px-5 py-3 font-medium">Nom complet</th>
+                <th className="px-5 py-3 font-medium">Poste</th>
+                <th className="px-5 py-3 font-medium">Département</th>
+                <th className="px-5 py-3 font-medium">Statut</th>
+                {isUserAdmin && <th className="px-5 py-3 font-medium text-right">Actions</th>}
+              </tr>
           </thead>
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={isUserAdmin ? 7 : 6} className="px-5 py-8 text-center text-slate-400">
+                <td colSpan={isUserAdmin ? 6 : 5} className="px-5 py-8 text-center text-slate-400">
                   Chargement…
                 </td>
               </tr>
             )}
             {!isLoading && employees.length === 0 && (
               <tr>
-                <td colSpan={isUserAdmin ? 7 : 6} className="px-5 py-8 text-center text-slate-400">
+                <td colSpan={isUserAdmin ? 6 : 5} className="px-5 py-8 text-center text-slate-400">
                   Aucun employé trouvé.
                 </td>
               </tr>
@@ -121,9 +131,6 @@ export default function TeachersPage() {
                 </td>
                 <td className="px-5 py-3 text-slate-500 dark:text-slate-400">{emp.position}</td>
                 <td className="px-5 py-3 text-slate-500 dark:text-slate-400">{emp.department ?? "—"}</td>
-                <td className="px-5 py-3 text-slate-500 dark:text-slate-400">
-                   {emp.contracts[0] ? `${emp.contracts[0].type} · ${formatCurrency(emp.contracts[0].baseSalary)}` : "—"}
-                </td>
                 <td className="px-5 py-3">
                   <span
                     className={cn(
@@ -177,6 +184,7 @@ export default function TeachersPage() {
         }}
         schoolId={schoolId}
         employee={selectedEmployee}
+        suggestedPositions={suggestedPositions}
       />
 
       {/* Delete Confirmation Modal */}

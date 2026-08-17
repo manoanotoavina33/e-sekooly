@@ -46,6 +46,27 @@ export function useSendMessage() {
   });
 }
 
+export function useUpdateMessage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...payload }: { id: string; subject?: string; body?: string }) => {
+      const { data } = await api.patch(`/messages/${id}`, payload);
+      return data.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["messages-sent"] }),
+  });
+}
+
+export function useDeleteMessage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/messages/${id}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["messages-sent"] }),
+  });
+}
+
 export function useMarkMessageRead() {
   const queryClient = useQueryClient();
   return useMutation({

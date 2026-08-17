@@ -12,7 +12,8 @@
     "jsx": "react-jsx",
     "strict": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] }
+    "paths": { "@/*": ["src/*"] },
+    "types": ["node", "electron"]
   },
-  "include": ["src"]
+  "include": ["src", "electron", "electron/types.d.ts"]
 }

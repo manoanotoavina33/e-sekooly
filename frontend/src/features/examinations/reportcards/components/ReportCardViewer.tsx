@@ -34,6 +34,7 @@ export function ReportCardViewer({ examSessionId, studentId }: { examSessionId: 
             {report.student.firstName} {report.student.lastName}
           </h3>
           <p className="text-xs text-slate-400">{report.classRoomName} · {report.sessionLabel}</p>
+          {report.semesterLabel && <p className="text-xs text-slate-400">Trimestre : {report.semesterLabel}</p>}
         </div>
         <Button size="sm" variant="secondary" onClick={handleDownload} isLoading={downloading}>
           <Download className="h-4 w-4" /> Télécharger le PDF
@@ -73,6 +74,20 @@ export function ReportCardViewer({ examSessionId, studentId }: { examSessionId: 
           <p className="font-display text-lg font-bold text-sky-700 dark:text-sky-300">{report.mention}</p>
         </div>
       </div>
+
+      {report.isThirdTrimester && report.decision && (
+        <div className={`rounded-xl p-4 text-center ${report.decision === "ADMITTED_NEXT_CLASS" ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300" : "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300"}`}>
+          <p className="font-display text-sm font-semibold">
+            {report.decision === "ADMITTED_NEXT_CLASS" ? "Admis en classe supérieure" : "Autorisé à redoubler"}
+          </p>
+        </div>
+      )}
+
+      {report.familyAlert && (
+        <div className="rounded-xl bg-red-50 p-4 text-center text-red-700 dark:bg-red-950/40 dark:text-red-300">
+          <p className="font-display text-sm font-semibold">ALERTE : moyenne générale inférieure à 4/20 — Remise à la famille</p>
+        </div>
+      )}
     </Card>
   );
 }

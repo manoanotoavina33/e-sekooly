@@ -1,3 +1,4 @@
+import { useSchool } from "@/features/settings/hooks/useSchoolSettings";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useStudents } from "@/features/students/hooks/useStudents";
@@ -18,10 +19,22 @@ const TYPE_LABELS: Record<string, string> = {
   EXAM_OFFICIEL: "Examen officiel",
 };
 
+const EXAM_TYPE_FILTER: Record<string, string[]> = {
+  PRIMARY: ["DEVOIR", "COMPOSITION"],
+  COLLEGE: ["DEVOIR", "COMPOSITION", "EXAM_OFFICIEL"],
+  LYCEE: ["DEVOIR", "COMPOSITION", "EXAM_BLANC", "EXAM_OFFICIEL"],
+  UNIVERSITE: ["EXAM_BLANC", "EXAM_OFFICIEL", "COMPOSITION"],
+};
+
 export default function ExaminationsPage() {
   const user = useAuthStore((s) => s.user);
   const schoolId = user?.schoolId ?? "";
   const [tab, setTab] = useState<"sessions" | "grades" | "reportcards">("sessions");
+
+  const { data: school } = useSchool(schoolId);
+  const currentSemesters = school?.schoolYears.find((y) => y.isCurrent)?.semesters ?? [];
+  const schoolTypeCodes = school?.schoolTypes.map((st) => st.schoolType.code) ?? [];
+  const allowedExamTypes = schoolTypeCodes.flatMap((code) => EXAM_TYPE_FILTER[code] ?? []);
 
   const { data: sessions } = useExamSessions(schoolId);
   const [selectedSessionId, setSelectedSessionId] = useState("");
@@ -172,7 +185,7 @@ export default function ExaminationsPage() {
         </div>
       )}
 
-      <ExamSessionFormModal open={sessionModalOpen} onClose={() => setSessionModalOpen(false)} schoolId={schoolId} />
+      <ExamSessionFormModal open={sessionModalOpen} onClose={() => setSessionModalOpen(false)} schoolId={schoolId} semesters={currentSemesters} allowedExamTypes={allowedExamTypes} />
       {selectedSessionId && (
         <ExamFormModal
           open={examModalOpen}

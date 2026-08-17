@@ -5,7 +5,7 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { api } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ export default function LoginPage() {
   const setSession = useAuthStore((s) => s.setSession);
   const [requiresOtp, setRequiresOtp] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -89,13 +90,22 @@ export default function LoginPage() {
               error={errors.email?.message}
               {...register("email")}
             />
-            <Input
-              label="Mot de passe"
-              type="password"
-              placeholder="••••••••"
-              error={errors.password?.message}
-              {...register("password")}
-            />
+            <div className="relative">
+              <Input
+                label="Mot de passe"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                error={errors.password?.message}
+                {...register("password")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-9 text-slate-400 hover:text-slate-600"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
 
             {requiresOtp && (
               <Input

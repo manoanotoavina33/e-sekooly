@@ -5,11 +5,15 @@ export interface ReportCard {
   student: { id: string; firstName: string; lastName: string; registrationNo: string };
   classRoomName: string;
   sessionLabel: string;
+  semesterLabel: string | null;
   subjects: { subjectId: string; subjectName: string; coefficient: number; average: number }[];
   overallAverage: number;
   rank: number;
   totalStudents: number;
   mention: string;
+  isThirdTrimester: boolean;
+  decision: "ADMITTED_NEXT_CLASS" | "REPEAT" | null;
+  familyAlert: boolean;
 }
 
 export function useReportCard(examSessionId?: string, studentId?: string) {

@@ -54,10 +54,10 @@ export interface CreateStudentPayload {
   placeOfBirth?: string;
   address?: string;
   phone?: string;
-  email?: string;
 }
 
 export interface UpdateStudentPayload extends Partial<CreateStudentPayload> {
+  email?: string;
   status?: Student["status"];
 }
 

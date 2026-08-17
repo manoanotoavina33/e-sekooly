@@ -1,1 +1,1 @@
-{"name":"e-sekooly","short_name":"e-sekooly","start_url":"/","display":"standalone","background_color":"#0A1120","lang":"en","scope":"/","description":"Gestion scolaire premium — offline first","theme_color":"#2389DE","icons":[{"src":"/logo.svg","sizes":"any","type":"image/svg+xml"}]}
+{"name":"e-sekooly","short_name":"e-sekooly","start_url":"./","display":"standalone","background_color":"#0A1120","lang":"en","scope":"./","description":"Gestion scolaire premium — offline first","theme_color":"#2389DE","icons":[{"src":"/logo.svg","sizes":"any","type":"image/svg+xml"}]}

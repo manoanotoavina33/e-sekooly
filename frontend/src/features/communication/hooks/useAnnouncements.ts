@@ -33,3 +33,38 @@ export function useCreateAnnouncement() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["announcements"] }),
   });
 }
+
+export function useUpdateAnnouncement() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...payload }: { id: string; title?: string; body?: string; audience?: Audience }) => {
+      const { data } = await api.patch(`/announcements/${id}`, payload);
+      return data.data as Announcement;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["announcements"] }),
+  });
+}
+
+export function useDeleteAnnouncement() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/announcements/${id}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["announcements"] }),
+  });
+}
+
+export async function downloadAnnouncementPdf(id: string) {
+  const { data } = await api.get(`/announcements/${id}/pdf`, {
+    responseType: "blob",
+  });
+  const url = window.URL.createObjectURL(new Blob([data], { type: "application/pdf" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "annonce.pdf";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+}

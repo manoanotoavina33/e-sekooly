@@ -8,6 +8,7 @@ import { useCreateExamSession } from "../hooks/useExams";
 
 const schema = z.object({
   label: z.string().min(2, "Libellé requis"),
+  semesterId: z.string().min(1, "Sélectionnez un trimestre"),
   type: z.enum(["DEVOIR", "COMPOSITION", "EXAM_BLANC", "EXAM_OFFICIEL"]),
   startDate: z.string().min(1),
   endDate: z.string().min(1),
@@ -21,7 +22,7 @@ const TYPE_LABELS: Record<FormValues["type"], string> = {
   EXAM_OFFICIEL: "Examen officiel",
 };
 
-export function ExamSessionFormModal({ open, onClose, schoolId }: { open: boolean; onClose: () => void; schoolId: string }) {
+export function ExamSessionFormModal({ open, onClose, schoolId, semesters, allowedExamTypes }: { open: boolean; onClose: () => void; schoolId: string; semesters: { id: string; label: string }[]; allowedExamTypes?: string[] }) {
   const createSession = useCreateExamSession();
   const {
     register,
@@ -41,14 +42,23 @@ export function ExamSessionFormModal({ open, onClose, schoolId }: { open: boolea
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <Input label="Libellé" placeholder="Composition du 1er trimestre" error={errors.label?.message} {...register("label")} />
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Type</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Trimestre</label>
+          <select className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm dark:bg-ink-800 dark:border-ink-700 dark:text-white" {...register("semesterId")}>
+            <option value="">Sélectionner…</option>
+            {semesters?.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+          </select>
+          {errors.semesterId && <span className="text-xs font-medium text-red-500">{errors.semesterId.message}</span>}
+        </div>
+        <div className="flex flex-col gap-1.5">
           <select
             className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm dark:bg-ink-800 dark:border-ink-700 dark:text-white"
             {...register("type")}
           >
-            {Object.entries(TYPE_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
+            {Object.entries(TYPE_LABELS)
+              .filter(([value]) => !allowedExamTypes || allowedExamTypes.includes(value))
+              .map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
           </select>
         </div>
         <div className="grid grid-cols-2 gap-3">

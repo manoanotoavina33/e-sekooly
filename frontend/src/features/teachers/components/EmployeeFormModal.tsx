@@ -26,11 +26,13 @@ export function EmployeeFormModal({
   onClose,
   schoolId,
   employee,
+  suggestedPositions,
 }: {
   open: boolean;
   onClose: () => void;
   schoolId: string;
   employee?: Employee | null;
+  suggestedPositions?: string[];
 }) {
   const createEmployee = useCreateEmployee();
   const updateEmployee = useUpdateEmployee();
@@ -120,7 +122,16 @@ export function EmployeeFormModal({
         )}
 
         <div className="grid grid-cols-2 gap-3">
-          <Input label="Poste" placeholder="Enseignant de Mathématiques" error={errors.position?.message} {...register("position")} />
+          <div className="flex flex-col gap-1.5">
+            <Input label="Poste" placeholder="Enseignant de Mathématiques" error={errors.position?.message} {...register("position")} list="position-suggestions" />
+            {suggestedPositions && suggestedPositions.length > 0 && (
+              <datalist id="position-suggestions">
+                {suggestedPositions.map((p) => (
+                  <option key={p} value={p} />
+                ))}
+              </datalist>
+            )}
+          </div>
           <Input label="Département" placeholder="Pédagogique" {...register("department")} />
         </div>
 

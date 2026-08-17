@@ -10,7 +10,6 @@ export interface Employee {
   degrees?: string | null;
   isActive: boolean;
   user: { firstName: string; lastName: string; email: string };
-  contracts: { type: string; baseSalary: number; status: string }[];
 }
 
 interface EmployeeListParams {
