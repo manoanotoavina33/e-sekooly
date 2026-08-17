@@ -15,7 +15,6 @@ exports.employeeRouter.get("/:id", (0, authorize_1.authorize)("hr.read"), employ
 exports.employeeRouter.post("/", (0, authorize_1.authorize)("hr.manage"), (0, validate_1.validateBody)(employee_validation_1.createEmployeeSchema), employee_controller_1.employeeController.create);
 exports.employeeRouter.patch("/:id", (0, authorize_1.authorize)("hr.manage"), (0, validate_1.validateBody)(employee_validation_1.updateEmployeeSchema), employee_controller_1.employeeController.update);
 exports.employeeRouter.delete("/:id", (0, authorize_1.authorize)("hr.manage"), employee_controller_1.employeeController.delete);
-exports.employeeRouter.post("/:id/contracts", (0, authorize_1.authorize)("hr.manage"), (0, validate_1.validateBody)(employee_validation_1.createContractSchema), employee_controller_1.employeeController.addContract);
 exports.employeeRouter.post("/:id/leaves", (0, authorize_1.authorize)("hr.read"), // un employé peut demander un congé sur son propre dossier
 (0, validate_1.validateBody)(employee_validation_1.createLeaveSchema), employee_controller_1.employeeController.requestLeave);
 exports.employeeRouter.patch("/:id/leaves/:leaveId", (0, authorize_1.authorize)("hr.manage"), (0, validate_1.validateBody)(employee_validation_1.decideLeaveSchema), employee_controller_1.employeeController.decideLeave);

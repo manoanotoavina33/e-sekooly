@@ -9,6 +9,7 @@ const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
+const path_1 = __importDefault(require("path"));
 const env_1 = require("./config/env");
 const errorHandler_1 = require("./core/middlewares/errorHandler");
 const auth_routes_1 = require("./modules/auth/routes/auth.routes");
@@ -41,7 +42,18 @@ const user_routes_1 = require("./modules/users/routes/user.routes");
 function createApp() {
     const app = (0, express_1.default)();
     app.use((0, helmet_1.default)());
-    app.use((0, cors_1.default)({ origin: env_1.env.corsOrigin, credentials: true }));
+    app.use((0, cors_1.default)({
+        origin: (origin, callback) => {
+            const allowed = [env_1.env.corsOrigin, "http://localhost:5173", "http://localhost:4000"];
+            if (!origin || origin === "null" || allowed.includes(origin)) {
+                callback(null, true);
+            }
+            else {
+                callback(new Error("Origin not allowed by CORS"));
+            }
+        },
+        credentials: true,
+    }));
     app.use(express_1.default.json({ limit: "20mb" }));
     app.use((0, cookie_parser_1.default)());
     app.use((0, morgan_1.default)(env_1.env.nodeEnv === "development" ? "dev" : "combined"));
@@ -78,6 +90,7 @@ function createApp() {
     app.use("/api/backups", backup_routes_1.backupRouter);
     app.use("/api/sync", sync_routes_1.syncRouter);
     app.use("/api/users", user_routes_1.userRouter);
+    app.use("/uploads", express_1.default.static(path_1.default.join(process.cwd(), "uploads")));
     app.use(errorHandler_1.notFoundHandler);
     app.use(errorHandler_1.errorHandler);
     return app;

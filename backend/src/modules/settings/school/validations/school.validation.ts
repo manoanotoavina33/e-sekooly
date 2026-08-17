@@ -10,6 +10,7 @@ export const updateSchoolSchema = z.object({
   website: z.string().optional(),
   currency: z.string().length(3).optional(),
   timezone: z.string().optional(),
+  schoolTypes: z.array(z.enum(["PRIMARY", "COLLEGE", "LYCEE", "UNIVERSITE"])).optional(),
 });
 export type UpdateSchoolInput = z.infer<typeof updateSchoolSchema>;
 

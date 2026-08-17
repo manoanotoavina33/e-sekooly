@@ -14,8 +14,20 @@ exports.announcementRepository = {
             orderBy: { publishedAt: "desc" },
         });
     },
+    async findById(id) {
+        return prisma_1.prisma.announcement.findUnique({
+            where: { id },
+            include: { author: { select: { firstName: true, lastName: true } } },
+        });
+    },
     create(data) {
         return prisma_1.prisma.announcement.create({ data });
+    },
+    update(id, data) {
+        return prisma_1.prisma.announcement.update({ where: { id }, data });
+    },
+    delete(id) {
+        return prisma_1.prisma.announcement.delete({ where: { id } });
     },
 };
 //# sourceMappingURL=announcement.repository.js.map

@@ -49,10 +49,9 @@ function computeStudentAverages(grades) {
 }
 exports.reportCardService = {
     async generate(examSessionId, studentId) {
-        const [session, student] = await Promise.all([
-            reportcard_repository_1.reportCardRepository.findSession(examSessionId),
-            reportcard_repository_1.reportCardRepository.findStudent(studentId),
-        ]);
+        const session = await reportcard_repository_1.reportCardRepository.findSession(examSessionId);
+        const student = await reportcard_repository_1.reportCardRepository.findStudent(studentId);
+        const semester = session?.semesterId ? await reportcard_repository_1.reportCardRepository.findSemester(session.semesterId) : null;
         if (!session)
             throw new AppError_1.NotFoundError("Session d'examens");
         if (!student)
@@ -61,7 +60,6 @@ exports.reportCardService = {
             throw new AppError_1.NotFoundError("Classe de l'élève");
         const grades = await reportcard_repository_1.reportCardRepository.findClassGradesForSession(examSessionId, student.classRoomId);
         const averages = computeStudentAverages(grades);
-        // Classement : tri décroissant des moyennes générales de toute la classe.
         const ranking = Array.from(averages.entries())
             .map(([id, data]) => ({ id, overallAverage: data.overallAverage }))
             .sort((a, b) => b.overallAverage - a.overallAverage);
@@ -70,6 +68,16 @@ exports.reportCardService = {
         if (!studentResult) {
             throw new AppError_1.NotFoundError("Notes de l'élève pour cette session (aucune note saisie)");
         }
+        const semesterLabel = semester?.label ?? null;
+        const isThirdTrimester = Boolean(semesterLabel && (semesterLabel.toLowerCase().includes("3") ||
+            semesterLabel.toLowerCase().includes("troisième") ||
+            semesterLabel.toLowerCase().includes("trimestre 3")));
+        const decision = isThirdTrimester
+            ? studentResult.overallAverage >= 10
+                ? "ADMITTED_NEXT_CLASS"
+                : "REPEAT"
+            : null;
+        const familyAlert = studentResult.overallAverage < 4;
         return {
             student: {
                 id: student.id,
@@ -79,11 +87,15 @@ exports.reportCardService = {
             },
             classRoomName: student.classRoom.name,
             sessionLabel: session.label,
+            semesterLabel,
             subjects: studentResult.subjects,
             overallAverage: studentResult.overallAverage,
             rank,
             totalStudents: ranking.length,
             mention: computeMention(studentResult.overallAverage),
+            isThirdTrimester,
+            decision,
+            familyAlert,
         };
     },
 };

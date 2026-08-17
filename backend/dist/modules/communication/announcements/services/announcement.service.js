@@ -6,6 +6,12 @@ exports.announcementService = {
     list(query) {
         return announcement_repository_1.announcementRepository.list(query);
     },
+    async getById(id) {
+        const announcement = await announcement_repository_1.announcementRepository.findById(id);
+        if (!announcement)
+            throw new Error("Annonce non trouvée");
+        return announcement;
+    },
     create(input, authorId) {
         return announcement_repository_1.announcementRepository.create({
             schoolId: input.schoolId,
@@ -14,6 +20,12 @@ exports.announcementService = {
             audience: input.audience,
             author: { connect: { id: authorId } },
         });
+    },
+    update(id, input) {
+        return announcement_repository_1.announcementRepository.update(id, input);
+    },
+    delete(id) {
+        return announcement_repository_1.announcementRepository.delete(id);
     },
 };
 //# sourceMappingURL=announcement.service.js.map

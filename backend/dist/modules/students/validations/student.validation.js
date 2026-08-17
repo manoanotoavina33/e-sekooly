@@ -12,7 +12,6 @@ exports.createStudentSchema = zod_1.z.object({
     placeOfBirth: zod_1.z.string().optional(),
     address: zod_1.z.string().optional(),
     phone: zod_1.z.string().optional(),
-    email: zod_1.z.string().email().optional().or(zod_1.z.literal("")),
 });
 exports.updateStudentSchema = exports.createStudentSchema.partial().extend({
     status: zod_1.z.enum(["ACTIVE", "SUSPENDED", "EXCLUDED", "GRADUATED", "TRANSFERRED", "ARCHIVED"]).optional(),

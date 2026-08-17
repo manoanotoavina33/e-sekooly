@@ -6,7 +6,6 @@ const message_repository_1 = require("../repositories/message.repository");
 exports.messageService = {
     async send(input, senderId) {
         const message = await message_repository_1.messageRepository.create(input.schoolId, senderId, input.subject, input.body, input.recipientIds);
-        // Notifie chaque destinataire (notification in-app) qu'il a reçu un message.
         await notification_service_1.notificationService.broadcast({
             schoolId: input.schoolId,
             title: `Nouveau message : ${input.subject}`,
@@ -20,6 +19,15 @@ exports.messageService = {
     },
     sent(userId) {
         return message_repository_1.messageRepository.sent(userId);
+    },
+    async getById(messageId, userId) {
+        return message_repository_1.messageRepository.findById(messageId, userId);
+    },
+    async update(messageId, userId, data) {
+        return message_repository_1.messageRepository.update(messageId, userId, data);
+    },
+    async delete(messageId, userId) {
+        return message_repository_1.messageRepository.delete(messageId, userId);
     },
     markRead(messageId, userId) {
         return message_repository_1.messageRepository.markRead(messageId, userId);

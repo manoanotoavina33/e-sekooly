@@ -9,6 +9,7 @@ import {
   updateSchoolSchema,
   upsertSystemSettingSchema,
 } from "../validations/school.validation";
+import { upload } from "../../../../core/middlewares/upload";
 
 export const schoolRouter = Router();
 
@@ -16,6 +17,7 @@ schoolRouter.use(authenticate);
 
 schoolRouter.get("/:id", authorize("settings.read"), schoolController.getById);
 schoolRouter.patch("/:id", authorize("settings.manage"), validateBody(updateSchoolSchema), schoolController.update);
+schoolRouter.post("/:id/upload-logo", authorize("settings.manage"), upload.single("logo"), schoolController.uploadLogo);
 
 schoolRouter.post(
   "/school-years",
@@ -33,6 +35,7 @@ schoolRouter.post(
 );
 
 schoolRouter.get("/:id/settings", authorize("settings.read"), schoolController.listSettings);
+schoolRouter.get("/categories", authorize("settings.read"), schoolController.listCategories);
 schoolRouter.put(
   "/settings",
   authorize("settings.manage"),

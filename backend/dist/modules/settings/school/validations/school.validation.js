@@ -12,6 +12,7 @@ exports.updateSchoolSchema = zod_1.z.object({
     website: zod_1.z.string().optional(),
     currency: zod_1.z.string().length(3).optional(),
     timezone: zod_1.z.string().optional(),
+    schoolTypes: zod_1.z.array(zod_1.z.enum(["PRIMARY", "COLLEGE", "LYCEE", "UNIVERSITE"])).optional(),
 });
 exports.createSchoolYearSchema = zod_1.z.object({
     schoolId: zod_1.z.string().uuid(),

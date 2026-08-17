@@ -33,7 +33,6 @@ export const employeeRepository = {
               updatedAt: true,
             },
           },
-          contracts: { orderBy: { startDate: "desc" }, take: 1 },
         },
         orderBy: { hireDate: "desc" },
         skip: (query.page - 1) * query.pageSize,
@@ -94,7 +93,6 @@ export const employeeRepository = {
       where: { id },
       include: {
         user: { select: { firstName: true, lastName: true, email: true, phone: true, roles: { include: { role: true } } } },
-        contracts: { orderBy: { startDate: "desc" } },
         leaves: { orderBy: { createdAt: "desc" } },
         salaryPayments: { orderBy: { period: "desc" } },
         teacherSubjects: { include: { subject: true, classRoom: true } },
@@ -124,10 +122,6 @@ export const employeeRepository = {
 
   delete(id: string) {
     return prisma.employee.delete({ where: { id } });
-  },
-
-  addContract(employeeId: string, data: Omit<Prisma.ContractCreateInput, "employee">) {
-    return prisma.contract.create({ data: { ...data, employee: { connect: { id: employeeId } } } });
   },
 
   createLeave(employeeId: string, data: Omit<Prisma.LeaveRequestCreateInput, "employee">) {

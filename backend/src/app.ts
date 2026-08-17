@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
+import path from "path";
 import { env } from "./config/env";
 import { errorHandler, notFoundHandler } from "./core/middlewares/errorHandler";
 import { authRouter } from "./modules/auth/routes/auth.routes";
@@ -38,7 +39,17 @@ export function createApp() {
   const app = express();
 
   app.use(helmet());
-  app.use(cors({ origin: env.corsOrigin, credentials: true }));
+  app.use(cors({
+    origin: (origin, callback) => {
+      const allowed = [env.corsOrigin, "http://localhost:5173", "http://localhost:4000"];
+      if (!origin || origin === "null" || allowed.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Origin not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  }));
   app.use(express.json({ limit: "20mb" }));
   app.use(cookieParser());
   app.use(morgan(env.nodeEnv === "development" ? "dev" : "combined"));
@@ -78,6 +89,8 @@ export function createApp() {
   app.use("/api/backups", backupRouter);
   app.use("/api/sync", syncRouter);
   app.use("/api/users", userRouter);
+
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
   app.use(notFoundHandler);
   app.use(errorHandler);

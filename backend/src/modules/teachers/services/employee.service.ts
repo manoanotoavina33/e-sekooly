@@ -4,7 +4,6 @@ import { prisma } from "../../../config/prisma";
 import { ConflictError, NotFoundError, ValidationError } from "../../../core/errors/AppError";
 import { employeeRepository } from "../repositories/employee.repository";
 import {
-  CreateContractInput,
   CreateEmployeeInput,
   CreateLeaveInput,
   CreateSalaryPaymentInput,
@@ -82,11 +81,6 @@ export const employeeService = {
   async delete(id: string) {
     await this.getById(id);
     return employeeRepository.delete(id);
-  },
-
-  async addContract(employeeId: string, input: CreateContractInput) {
-    await this.getById(employeeId);
-    return employeeRepository.addContract(employeeId, input);
   },
 
   async requestLeave(employeeId: string, input: CreateLeaveInput) {

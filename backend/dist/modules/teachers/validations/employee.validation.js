@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listEmployeesQuerySchema = exports.createSalaryPaymentSchema = exports.assignSubjectSchema = exports.decideLeaveSchema = exports.createLeaveSchema = exports.createContractSchema = exports.updateEmployeeSchema = exports.createEmployeeSchema = void 0;
+exports.listEmployeesQuerySchema = exports.createSalaryPaymentSchema = exports.assignSubjectSchema = exports.decideLeaveSchema = exports.createLeaveSchema = exports.updateEmployeeSchema = exports.createEmployeeSchema = void 0;
 const zod_1 = require("zod");
 exports.createEmployeeSchema = zod_1.z.object({
     schoolId: zod_1.z.string().uuid(),
@@ -19,12 +19,6 @@ exports.updateEmployeeSchema = zod_1.z.object({
     department: zod_1.z.string().optional(),
     degrees: zod_1.z.string().optional(),
     isActive: zod_1.z.boolean().optional(),
-});
-exports.createContractSchema = zod_1.z.object({
-    type: zod_1.z.enum(["CDI", "CDD", "VACATION", "INTERNSHIP"]),
-    startDate: zod_1.z.coerce.date(),
-    endDate: zod_1.z.coerce.date().optional(),
-    baseSalary: zod_1.z.number().positive("Le salaire doit être positif"),
 });
 exports.createLeaveSchema = zod_1.z.object({
     type: zod_1.z.enum(["ANNUAL", "SICK", "MATERNITY", "PATERNITY", "UNPAID", "OTHER"]),

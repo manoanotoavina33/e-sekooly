@@ -33,10 +33,6 @@ exports.employeeController = {
         await employee_service_1.employeeService.delete(req.params.id);
         res.json({ success: true });
     }),
-    addContract: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-        const contract = await employee_service_1.employeeService.addContract(req.params.id, req.body);
-        res.status(201).json({ success: true, data: contract });
-    }),
     requestLeave: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const leave = await employee_service_1.employeeService.requestLeave(req.params.id, req.body);
         res.status(201).json({ success: true, data: leave });

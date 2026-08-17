@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.studentService = void 0;
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const crypto_1 = __importDefault(require("crypto"));
 const prisma_1 = require("../../../config/prisma");
 const AppError_1 = require("../../../core/errors/AppError");
@@ -65,40 +64,6 @@ exports.studentService = {
         const registrationNo = await generateRegistrationNumber(input.schoolId);
         const qrCodeToken = generateQrToken();
         return prisma_1.prisma.$transaction(async (tx) => {
-            let userId;
-            let temporaryPassword;
-            if (input.email) {
-                const studentRole = await tx.role.findUniqueOrThrow({ where: { name: "STUDENT" } });
-                const existingUser = await tx.user.findUnique({
-                    where: { email: input.email },
-                    include: { student: true, roles: true },
-                });
-                if (existingUser?.student) {
-                    throw new AppError_1.ConflictError("Un compte etudiant existe deja pour cet e-mail");
-                }
-                if (existingUser) {
-                    userId = existingUser.id;
-                    const hasStudentRole = existingUser.roles.some((role) => role.roleId === studentRole.id);
-                    if (!hasStudentRole) {
-                        await tx.userRole.create({ data: { userId, roleId: studentRole.id } });
-                    }
-                }
-                else {
-                    temporaryPassword = crypto_1.default.randomBytes(6).toString("base64url");
-                    const passwordHash = await bcryptjs_1.default.hash(temporaryPassword, 12);
-                    const user = await tx.user.create({
-                        data: {
-                            firstName: input.firstName,
-                            lastName: input.lastName,
-                            email: input.email,
-                            passwordHash,
-                            schoolId: input.schoolId,
-                            roles: { create: [{ roleId: studentRole.id }] },
-                        },
-                    });
-                    userId = user.id;
-                }
-            }
             const student = await tx.student.create({
                 data: {
                     registrationNo,
@@ -110,14 +75,12 @@ exports.studentService = {
                     placeOfBirth: input.placeOfBirth,
                     address: input.address,
                     phone: input.phone,
-                    email: input.email || undefined,
                     schoolId: input.schoolId,
-                    user: userId ? { connect: { id: userId } } : undefined,
                     classRoom: input.classRoomId ? { connect: { id: input.classRoomId } } : undefined,
                 },
                 include: { classRoom: true, user: { select: { id: true, email: true, isActive: true } } },
             });
-            return { ...student, temporaryPassword };
+            return student;
         });
     },
     async update(id, input) {

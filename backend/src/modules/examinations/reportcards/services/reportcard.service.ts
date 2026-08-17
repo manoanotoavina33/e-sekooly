@@ -12,11 +12,15 @@ export interface ReportCard {
   student: { id: string; firstName: string; lastName: string; registrationNo: string };
   classRoomName: string;
   sessionLabel: string;
+  semesterLabel: string | null;
   subjects: SubjectResult[];
   overallAverage: number;
   rank: number;
   totalStudents: number;
   mention: string;
+  isThirdTrimester: boolean;
+  decision: "ADMITTED_NEXT_CLASS" | "REPEAT" | null;
+  familyAlert: boolean;
 }
 
 function computeMention(average: number): string {
@@ -74,10 +78,9 @@ function computeStudentAverages(
 
 export const reportCardService = {
   async generate(examSessionId: string, studentId: string): Promise<ReportCard> {
-    const [session, student] = await Promise.all([
-      reportCardRepository.findSession(examSessionId),
-      reportCardRepository.findStudent(studentId),
-    ]);
+    const session = await reportCardRepository.findSession(examSessionId);
+    const student = await reportCardRepository.findStudent(studentId);
+    const semester = session?.semesterId ? await reportCardRepository.findSemester(session.semesterId) : null;
     if (!session) throw new NotFoundError("Session d'examens");
     if (!student) throw new NotFoundError("Élève");
     if (!student.classRoomId) throw new NotFoundError("Classe de l'élève");
@@ -85,7 +88,6 @@ export const reportCardService = {
     const grades = await reportCardRepository.findClassGradesForSession(examSessionId, student.classRoomId);
     const averages = computeStudentAverages(grades);
 
-    // Classement : tri décroissant des moyennes générales de toute la classe.
     const ranking = Array.from(averages.entries())
       .map(([id, data]) => ({ id, overallAverage: data.overallAverage }))
       .sort((a, b) => b.overallAverage - a.overallAverage);
@@ -97,6 +99,21 @@ export const reportCardService = {
       throw new NotFoundError("Notes de l'élève pour cette session (aucune note saisie)");
     }
 
+    const semesterLabel = semester?.label ?? null;
+    const isThirdTrimester = Boolean(
+      semesterLabel && (
+        semesterLabel.toLowerCase().includes("3") ||
+        semesterLabel.toLowerCase().includes("troisième") ||
+        semesterLabel.toLowerCase().includes("trimestre 3")
+      )
+    );
+    const decision = isThirdTrimester
+      ? studentResult.overallAverage >= 10
+        ? "ADMITTED_NEXT_CLASS"
+        : "REPEAT"
+      : null;
+    const familyAlert = studentResult.overallAverage < 4;
+
     return {
       student: {
         id: student.id,
@@ -106,11 +123,15 @@ export const reportCardService = {
       },
       classRoomName: student.classRoom!.name,
       sessionLabel: session.label,
+      semesterLabel,
       subjects: studentResult.subjects,
       overallAverage: studentResult.overallAverage,
       rank,
       totalStudents: ranking.length,
       mention: computeMention(studentResult.overallAverage),
+      isThirdTrimester,
+      decision,
+      familyAlert,
     };
   },
 };

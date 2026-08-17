@@ -12,6 +12,10 @@ exports.schoolController = {
         const school = await school_service_1.schoolService.update(req.params.id, req.body);
         res.json({ success: true, data: school });
     }),
+    uploadLogo: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+        const school = await school_service_1.schoolService.uploadLogo(req.params.id, req.file);
+        res.json({ success: true, data: school });
+    }),
     createSchoolYear: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const year = await school_service_1.schoolService.createSchoolYear(req.body);
         res.status(201).json({ success: true, data: year });
@@ -27,6 +31,10 @@ exports.schoolController = {
     listSettings: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const settings = await school_service_1.schoolService.listSettings(req.params.id);
         res.json({ success: true, data: settings });
+    }),
+    listCategories: (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
+        const categories = await school_service_1.schoolService.listCategories();
+        res.json({ success: true, data: categories });
     }),
     upsertSetting: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const setting = await school_service_1.schoolService.upsertSetting(req.body.schoolId, req.body.key, req.body.value);

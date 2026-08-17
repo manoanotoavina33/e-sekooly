@@ -15,7 +15,19 @@ export const schoolService = {
 
   async update(id: string, input: UpdateSchoolInput) {
     await this.getById(id);
-    return schoolRepository.update(id, input);
+    const { schoolTypes, ...schoolData } = input;
+    const school = await schoolRepository.update(id, schoolData);
+    if (schoolTypes) {
+      await schoolRepository.setSchoolTypes(id, schoolTypes);
+    }
+    return schoolRepository.findById(id);
+  },
+
+  async uploadLogo(id: string, file: Express.Multer.File | undefined) {
+    await this.getById(id);
+    if (!file) throw new Error("Fichier requis");
+    const logoUrl = `/uploads/${file.filename}`;
+    return schoolRepository.update(id, { logoUrl } as never);
   },
 
   createSchoolYear(input: CreateSchoolYearInput) {
@@ -46,5 +58,9 @@ export const schoolService = {
 
   upsertSetting(schoolId: string, key: string, value: string) {
     return schoolRepository.upsertSetting(schoolId, key, value);
+  },
+
+  listCategories() {
+    return schoolRepository.listCategories();
   },
 };

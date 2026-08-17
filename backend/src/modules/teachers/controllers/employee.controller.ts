@@ -3,7 +3,6 @@ import { asyncHandler } from "../../../core/utils/asyncHandler";
 import { employeeService } from "../services/employee.service";
 import {
   AssignSubjectInput,
-  CreateContractInput,
   CreateEmployeeInput,
   CreateLeaveInput,
   CreateSalaryPaymentInput,
@@ -46,11 +45,6 @@ export const employeeController = {
   delete: asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
     await employeeService.delete(req.params.id);
     res.json({ success: true });
-  }),
-
-  addContract: asyncHandler(async (req: Request<{ id: string }, unknown, CreateContractInput>, res: Response) => {
-    const contract = await employeeService.addContract(req.params.id, req.body);
-    res.status(201).json({ success: true, data: contract });
   }),
 
   requestLeave: asyncHandler(async (req: Request<{ id: string }, unknown, CreateLeaveInput>, res: Response) => {

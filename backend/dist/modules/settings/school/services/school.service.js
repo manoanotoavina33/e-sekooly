@@ -12,7 +12,19 @@ exports.schoolService = {
     },
     async update(id, input) {
         await this.getById(id);
-        return school_repository_1.schoolRepository.update(id, input);
+        const { schoolTypes, ...schoolData } = input;
+        const school = await school_repository_1.schoolRepository.update(id, schoolData);
+        if (schoolTypes) {
+            await school_repository_1.schoolRepository.setSchoolTypes(id, schoolTypes);
+        }
+        return school_repository_1.schoolRepository.findById(id);
+    },
+    async uploadLogo(id, file) {
+        await this.getById(id);
+        if (!file)
+            throw new Error("Fichier requis");
+        const logoUrl = `/uploads/${file.filename}`;
+        return school_repository_1.schoolRepository.update(id, { logoUrl });
     },
     createSchoolYear(input) {
         return school_repository_1.schoolRepository.createSchoolYear({
@@ -38,6 +50,9 @@ exports.schoolService = {
     },
     upsertSetting(schoolId, key, value) {
         return school_repository_1.schoolRepository.upsertSetting(schoolId, key, value);
+    },
+    listCategories() {
+        return school_repository_1.schoolRepository.listCategories();
     },
 };
 //# sourceMappingURL=school.service.js.map

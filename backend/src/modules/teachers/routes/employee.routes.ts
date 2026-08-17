@@ -5,7 +5,6 @@ import { validateBody, validateQuery } from "../../../core/middlewares/validate"
 import { employeeController } from "../controllers/employee.controller";
 import {
   assignSubjectSchema,
-  createContractSchema,
   createEmployeeSchema,
   createLeaveSchema,
   createSalaryPaymentSchema,
@@ -24,13 +23,6 @@ employeeRouter.get("/:id", authorize("hr.read"), employeeController.getById);
 employeeRouter.post("/", authorize("hr.manage"), validateBody(createEmployeeSchema), employeeController.create);
 employeeRouter.patch("/:id", authorize("hr.manage"), validateBody(updateEmployeeSchema), employeeController.update);
 employeeRouter.delete("/:id", authorize("hr.manage"), employeeController.delete);
-
-employeeRouter.post(
-  "/:id/contracts",
-  authorize("hr.manage"),
-  validateBody(createContractSchema),
-  employeeController.addContract
-);
 
 employeeRouter.post(
   "/:id/leaves",

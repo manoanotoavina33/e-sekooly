@@ -11,5 +11,8 @@ exports.messageRouter.use(authenticate_1.authenticate);
 exports.messageRouter.get("/inbox", message_controller_1.messageController.inbox);
 exports.messageRouter.get("/sent", message_controller_1.messageController.sent);
 exports.messageRouter.post("/", (0, validate_1.validateBody)(message_validation_1.sendMessageSchema), message_controller_1.messageController.send);
+exports.messageRouter.get("/:id", message_controller_1.messageController.getById);
+exports.messageRouter.patch("/:id", (0, validate_1.validateBody)(message_validation_1.updateMessageSchema), message_controller_1.messageController.update);
+exports.messageRouter.delete("/:id", message_controller_1.messageController.delete);
 exports.messageRouter.patch("/:id/read", message_controller_1.messageController.markRead);
 //# sourceMappingURL=message.routes.js.map

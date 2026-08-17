@@ -22,14 +22,6 @@ export const updateEmployeeSchema = z.object({
 });
 export type UpdateEmployeeInput = z.infer<typeof updateEmployeeSchema>;
 
-export const createContractSchema = z.object({
-  type: z.enum(["CDI", "CDD", "VACATION", "INTERNSHIP"]),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
-  baseSalary: z.number().positive("Le salaire doit être positif"),
-});
-export type CreateContractInput = z.infer<typeof createContractSchema>;
-
 export const createLeaveSchema = z.object({
   type: z.enum(["ANNUAL", "SICK", "MATERNITY", "PATERNITY", "UNPAID", "OTHER"]),
   startDate: z.coerce.date(),

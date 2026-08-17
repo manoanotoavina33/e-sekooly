@@ -1,5 +1,4 @@
 import { Prisma } from "@prisma/client";
-import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { prisma } from "../../../config/prisma";
 import { ConflictError, ForbiddenError, NotFoundError } from "../../../core/errors/AppError";
@@ -74,43 +73,6 @@ export const studentService = {
     const qrCodeToken = generateQrToken();
 
     return prisma.$transaction(async (tx) => {
-      let userId: string | undefined;
-      let temporaryPassword: string | undefined;
-
-      if (input.email) {
-        const studentRole = await tx.role.findUniqueOrThrow({ where: { name: "STUDENT" } });
-        const existingUser = await tx.user.findUnique({
-          where: { email: input.email },
-          include: { student: true, roles: true },
-        });
-
-        if (existingUser?.student) {
-          throw new ConflictError("Un compte etudiant existe deja pour cet e-mail");
-        }
-
-        if (existingUser) {
-          userId = existingUser.id;
-          const hasStudentRole = existingUser.roles.some((role) => role.roleId === studentRole.id);
-          if (!hasStudentRole) {
-            await tx.userRole.create({ data: { userId, roleId: studentRole.id } });
-          }
-        } else {
-          temporaryPassword = crypto.randomBytes(6).toString("base64url");
-          const passwordHash = await bcrypt.hash(temporaryPassword, 12);
-          const user = await tx.user.create({
-            data: {
-              firstName: input.firstName,
-              lastName: input.lastName,
-              email: input.email,
-              passwordHash,
-              schoolId: input.schoolId,
-              roles: { create: [{ roleId: studentRole.id }] },
-            },
-          });
-          userId = user.id;
-        }
-      }
-
       const student = await tx.student.create({
         data: {
           registrationNo,
@@ -122,15 +84,13 @@ export const studentService = {
           placeOfBirth: input.placeOfBirth,
           address: input.address,
           phone: input.phone,
-          email: input.email || undefined,
           schoolId: input.schoolId,
-          user: userId ? { connect: { id: userId } } : undefined,
           classRoom: input.classRoomId ? { connect: { id: input.classRoomId } } : undefined,
         },
         include: { classRoom: true, user: { select: { id: true, email: true, isActive: true } } },
       });
 
-        return { ...student, temporaryPassword };
+      return student;
     });
   },
 

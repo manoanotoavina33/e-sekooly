@@ -7,6 +7,7 @@ import {
   UpdateSchoolInput,
   UpsertSystemSettingInput,
 } from "../validations/school.validation";
+import { upload } from "../../../../core/middlewares/upload";
 
 export const schoolController = {
   getById: asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
@@ -16,6 +17,11 @@ export const schoolController = {
 
   update: asyncHandler(async (req: Request<{ id: string }, unknown, UpdateSchoolInput>, res: Response) => {
     const school = await schoolService.update(req.params.id, req.body);
+    res.json({ success: true, data: school });
+  }),
+
+  uploadLogo: asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
+    const school = await schoolService.uploadLogo(req.params.id, req.file);
     res.json({ success: true, data: school });
   }),
 
@@ -37,6 +43,11 @@ export const schoolController = {
   listSettings: asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
     const settings = await schoolService.listSettings(req.params.id);
     res.json({ success: true, data: settings });
+  }),
+
+  listCategories: asyncHandler(async (_req: Request, res: Response) => {
+    const categories = await schoolService.listCategories();
+    res.json({ success: true, data: categories });
   }),
 
   upsertSetting: asyncHandler(async (req: Request<unknown, unknown, UpsertSystemSettingInput>, res: Response) => {

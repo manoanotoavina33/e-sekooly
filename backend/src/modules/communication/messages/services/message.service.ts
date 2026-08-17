@@ -12,7 +12,6 @@ export const messageService = {
       input.recipientIds
     );
 
-    // Notifie chaque destinataire (notification in-app) qu'il a reçu un message.
     await notificationService.broadcast(
       {
         schoolId: input.schoolId,
@@ -32,6 +31,18 @@ export const messageService = {
 
   sent(userId: string) {
     return messageRepository.sent(userId);
+  },
+
+  async getById(messageId: string, userId: string) {
+    return messageRepository.findById(messageId, userId);
+  },
+
+  async update(messageId: string, userId: string, data: { subject?: string; body?: string }) {
+    return messageRepository.update(messageId, userId, data);
+  },
+
+  async delete(messageId: string, userId: string) {
+    return messageRepository.delete(messageId, userId);
   },
 
   markRead(messageId: string, userId: string) {

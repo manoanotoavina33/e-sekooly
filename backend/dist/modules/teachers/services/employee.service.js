@@ -71,10 +71,6 @@ exports.employeeService = {
         await this.getById(id);
         return employee_repository_1.employeeRepository.delete(id);
     },
-    async addContract(employeeId, input) {
-        await this.getById(employeeId);
-        return employee_repository_1.employeeRepository.addContract(employeeId, input);
-    },
     async requestLeave(employeeId, input) {
         await this.getById(employeeId);
         if (input.endDate < input.startDate) {

@@ -16,6 +16,18 @@ exports.messageController = {
         const messages = await message_service_1.messageService.sent(req.auth.userId);
         res.json({ success: true, data: messages });
     }),
+    getById: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+        const message = await message_service_1.messageService.getById(req.params.id, req.auth.userId);
+        res.json({ success: true, data: message });
+    }),
+    update: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+        const message = await message_service_1.messageService.update(req.params.id, req.auth.userId, req.body);
+        res.json({ success: true, data: message });
+    }),
+    delete: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+        await message_service_1.messageService.delete(req.params.id, req.auth.userId);
+        res.json({ success: true });
+    }),
     markRead: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         await message_service_1.messageService.markRead(req.params.id, req.auth.userId);
         res.json({ success: true });

@@ -1,4 +1,4 @@
-import { PrismaClient, RoleName } from "@prisma/client";
+import { PrismaClient, RoleName, SchoolType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -138,6 +138,27 @@ async function main() {
       currency: "MGA",
       timezone: "Indian/Antananarivo",
     },
+  });
+
+  const SCHOOL_TYPES: { code: SchoolType; label: string }[] = [
+    { code: "PRIMARY", label: "Primaires" },
+    { code: "COLLEGE", label: "Collège" },
+    { code: "LYCEE", label: "Lycée" },
+    { code: "UNIVERSITE", label: "Université" },
+  ];
+
+  for (const type of SCHOOL_TYPES) {
+    await prisma.schoolCategory.upsert({
+      where: { code: type.code },
+      update: {},
+      create: type,
+    });
+  }
+
+  const categories = await prisma.schoolCategory.findMany();
+  await prisma.schoolSchoolCategory.deleteMany({ where: { schoolId: school.id } });
+  await prisma.schoolSchoolCategory.createMany({
+    data: categories.map((cat) => ({ schoolId: school.id, schoolTypeId: cat.id })),
   });
 
   const superAdminRole = await prisma.role.findUniqueOrThrow({ where: { name: "SUPER_ADMIN" } });

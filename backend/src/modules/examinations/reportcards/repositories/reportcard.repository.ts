@@ -12,6 +12,11 @@ export const reportCardRepository = {
     });
   },
 
+  findSemester(semesterId: string) {
+    if (!semesterId) return Promise.resolve(null);
+    return prisma.semester.findUnique({ where: { id: semesterId } });
+  },
+
   /**
    * Récupère toutes les notes de tous les élèves d'une classe pour une
    * session d'examens donnée, avec la matière et le barème de chaque
