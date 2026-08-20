@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/Card";
 import { useClassRooms } from "@/features/academics/classrooms/hooks/useClassRooms";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { QrCheckinCard } from "./components/QrCheckinCard";
@@ -8,8 +8,7 @@ import { StaffAttendanceTable } from "./components/StaffAttendanceTable";
 import { StudentQuickEntryTable } from "./components/StudentQuickEntryTable";
 
 export default function AttendancePage() {
-  const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const [tab, setTab] = useState<"students" | "staff">("students");
   const { data: classRooms } = useClassRooms(schoolId);
   const [classRoomId, setClassRoomId] = useState("");

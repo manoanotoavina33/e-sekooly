@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import { BackupPanel } from "@/features/backup/components/BackupPanel";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { SchoolInfoForm } from "./components/SchoolInfoForm";
@@ -11,7 +12,7 @@ import { useSchool } from "./hooks/useSchoolSettings";
 
 export default function SettingsPage() {
   const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const canManageUsers = (user?.permissions ?? []).includes("users.manage");
   const [tab, setTab] = useState<"general" | "years" | "backup" | "sync" | "users">("general");
 

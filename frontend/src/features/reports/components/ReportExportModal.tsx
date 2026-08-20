@@ -5,7 +5,7 @@ import { useClassRooms } from "@/features/academics/classrooms/hooks/useClassRoo
 import { useCashRegisters, useCashSessions } from "@/features/cashier/hooks/useCashSessions";
 import { useExamSessions, useExams } from "@/features/examinations/exams/hooks/useExams";
 import { useStudents } from "@/features/students/hooks/useStudents";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { Download, FileSpreadsheet, FileText } from "lucide-react";
 import { useState } from "react";
 import { downloadReport, ReportFormat, ReportSummary } from "../hooks/useReports";
@@ -25,8 +25,7 @@ const REPORT_FIELDS: Record<string, string[]> = {
 };
 
 export function ReportExportModal({ open, onClose, report }: { open: boolean; onClose: () => void; report: ReportSummary }) {
-  const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const fields = REPORT_FIELDS[report.id] ?? [];
 
   const [classRoomId, setClassRoomId] = useState("");

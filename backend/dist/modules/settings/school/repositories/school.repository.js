@@ -12,6 +12,12 @@ exports.schoolRepository = {
             },
         });
     },
+    list() {
+        return prisma_1.prisma.school.findMany({
+            select: { id: true, name: true, shortName: true, currency: true },
+            orderBy: { name: "asc" },
+        });
+    },
     update(id, data) {
         return prisma_1.prisma.school.update({ where: { id }, data });
     },

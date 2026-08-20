@@ -44,7 +44,7 @@ function createApp() {
     app.use((0, helmet_1.default)());
     app.use((0, cors_1.default)({
         origin: (origin, callback) => {
-            const allowed = [env_1.env.corsOrigin, "http://localhost:5173", "http://localhost:4000"];
+            const allowed = [env_1.env.corsOrigin, "http://localhost:5173", "http://localhost:4000", "file://"];
             if (!origin || origin === "null" || allowed.includes(origin)) {
                 callback(null, true);
             }

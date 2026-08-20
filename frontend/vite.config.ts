@@ -2,9 +2,9 @@ import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
-import electron from "vite-plugin-electron";
 
 export default defineConfig({
+  base: './',
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -14,6 +14,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      workbox: {
+        maximumFileSizeToCacheInBytes: 50 * 1024 * 1024,
+      },
       manifest: {
         name: "e-sekooly",
         short_name: "e-sekooly",
@@ -24,28 +27,14 @@ export default defineConfig({
         icons: [{ src: "/logo.svg", sizes: "any", type: "image/svg+xml" }],
       },
     }),
-    electron([
-      {
-        entry: "electron/main.ts",
-        vite: {
-          build: {
-            outDir: "dist-electron",
-          },
-        },
-      },
-      {
-        entry: "electron/preload.ts",
-        vite: {
-          build: {
-            outDir: "dist-electron",
-          },
-        },
-      },
-    ]),
   ],
   server: {
     port: 5173,
     proxy: {
+      '/api': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
       '/uploads': {
         target: 'http://localhost:4000',
         changeOrigin: true,

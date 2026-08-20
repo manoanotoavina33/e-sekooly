@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { cn, formatCurrency } from "@/lib/utils";
 import {
   CheckCircle2,
@@ -46,8 +46,7 @@ const MONTHS = [
 ];
 
 export default function FinancePage() {
-  const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
 
   const now = new Date();
   const [tab, setTab] = useState<"payments" | "students">("payments");

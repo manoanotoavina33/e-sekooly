@@ -41,7 +41,7 @@ export function createApp() {
   app.use(helmet());
   app.use(cors({
     origin: (origin, callback) => {
-      const allowed = [env.corsOrigin, "http://localhost:5173", "http://localhost:4000"];
+      const allowed = [env.corsOrigin, "http://localhost:5173", "http://localhost:4000", "file://"];
       if (!origin || origin === "null" || allowed.includes(origin)) {
         callback(null, true);
       } else {

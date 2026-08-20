@@ -31,7 +31,7 @@ export const suspendStudentSchema = z.object({
 export type SuspendStudentInput = z.infer<typeof suspendStudentSchema>;
 
 export const listStudentsQuerySchema = z.object({
-  schoolId: z.string().uuid(),
+  schoolId: z.string().uuid().optional(),
   classRoomId: z.string().uuid().optional(),
   status: z.enum(["ACTIVE", "SUSPENDED", "EXCLUDED", "GRADUATED", "TRANSFERRED", "ARCHIVED"]).optional(),
   search: z.string().optional(),

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { useSchool } from "@/features/settings/hooks/useSchoolSettings";
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -20,7 +21,7 @@ const POSITION_SUGGESTIONS: Record<string, string[]> = {
 
 export default function TeachersPage() {
   const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const { data: school } = useSchool(schoolId);
   const schoolTypeCodes = school?.schoolTypes.map((st) => st.schoolType.code) ?? [];
   const suggestedPositions = schoolTypeCodes.flatMap((code) => POSITION_SUGGESTIONS[code] ?? []);

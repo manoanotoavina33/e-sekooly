@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { formatCurrency } from "@/lib/utils";
 import { type PaymentMethod, useRecordQuickPayment } from "@/features/finance/payments/hooks/usePayments";
 import type { Invoice } from "@/features/finance/invoices/hooks/useInvoices";
@@ -54,7 +55,7 @@ interface StudentPaymentModalProps {
 
 export function StudentPaymentModal({ open, onClose, cashSessionId }: StudentPaymentModalProps) {
   const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
 
   // Step management: "select-student" → "payment" → "receipt"
   const [step, setStep] = useState<"select-student" | "payment" | "receipt">("select-student");

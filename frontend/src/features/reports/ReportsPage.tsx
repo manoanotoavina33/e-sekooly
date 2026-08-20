@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { formatCurrency } from "@/lib/utils";
 import {
   BookOpen,
@@ -55,8 +55,8 @@ const MODULE_COLORS: Record<string, { bg: string; text: string; border: string; 
 
 export default function ReportsPage() {
   const { data: reports, isLoading } = useReportList();
-  const user = useAuthStore((s) => s.user);
-  const { data: summary } = useFinanceSummary(user?.schoolId ?? "");
+  const schoolId = useEffectiveSchoolId();
+  const { data: summary } = useFinanceSummary(schoolId);
   const [selectedReport, setSelectedReport] = useState<ReportSummary | null>(null);
   const [search, setSearch] = useState("");
   const [activeModule, setActiveModule] = useState<string>("all");

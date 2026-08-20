@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useClassRooms } from "@/features/academics/classrooms/hooks/useClassRooms";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { Download, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { TimetableSlotFormModal } from "./components/TimetableSlotFormModal";
@@ -17,8 +17,7 @@ const DAYS = [
 ] as const;
 
 export default function TimetablePage() {
-  const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const { data: classRooms } = useClassRooms(schoolId);
   const [selectedClassId, setSelectedClassId] = useState<string>("");
   const [formOpen, setFormOpen] = useState(false);

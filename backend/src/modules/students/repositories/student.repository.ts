@@ -5,7 +5,7 @@ import { ListStudentsQuery } from "../validations/student.validation";
 export const studentRepository = {
   async list(query: ListStudentsQuery, scope?: Prisma.StudentWhereInput) {
     const where: Prisma.StudentWhereInput = {
-      schoolId: query.schoolId,
+      ...(query.schoolId ? { schoolId: query.schoolId } : {}),
       classRoomId: query.classRoomId,
       status: query.status,
       ...scope,

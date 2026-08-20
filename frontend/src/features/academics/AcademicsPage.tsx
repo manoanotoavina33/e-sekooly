@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Modal } from "@/components/ui/Modal";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { useSchool } from "@/features/settings/hooks/useSchoolSettings";
 import { cn } from "@/lib/utils";
 import { Edit, Plus, Trash2 } from "lucide-react";
@@ -27,7 +28,7 @@ const SUBJECT_SUGGESTIONS: Record<string, string[]> = {
 
 export default function AcademicsPage() {
   const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const { data: school } = useSchool(schoolId);
   const schoolTypeCodes = school?.schoolTypes.map((st) => st.schoolType.code) ?? [];
   const suggestedLevels = schoolTypeCodes.flatMap((code) => LEVEL_SUGGESTIONS[code] ?? []);

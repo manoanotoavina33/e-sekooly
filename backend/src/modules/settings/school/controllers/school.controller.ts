@@ -10,6 +10,11 @@ import {
 import { upload } from "../../../../core/middlewares/upload";
 
 export const schoolController = {
+  list: asyncHandler(async (_req: Request, res: Response) => {
+    const schools = await schoolService.list();
+    res.json({ success: true, data: schools });
+  }),
+
   getById: asyncHandler(async (req: Request<{ id: string }>, res: Response) => {
     const school = await schoolService.getById(req.params.id);
     res.json({ success: true, data: school });

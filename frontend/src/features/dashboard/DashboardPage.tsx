@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/Card";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { useStudents } from "@/features/students/hooks/useStudents";
 import { useTeacherCount } from "@/features/teachers/hooks/useEmployees";
 import { useClassRooms } from "@/features/academics/classrooms/hooks/useClassRooms";
@@ -10,7 +11,7 @@ import { Link } from "react-router-dom";
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
 
   // Dynamic counts & real data
   const { data: studentsData, isLoading: studentsLoading } = useStudents({ schoolId, pageSize: 10 });

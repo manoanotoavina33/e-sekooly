@@ -4,6 +4,10 @@ exports.schoolController = void 0;
 const asyncHandler_1 = require("../../../../core/utils/asyncHandler");
 const school_service_1 = require("../services/school.service");
 exports.schoolController = {
+    list: (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
+        const schools = await school_service_1.schoolService.list();
+        res.json({ success: true, data: schools });
+    }),
     getById: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const school = await school_service_1.schoolService.getById(req.params.id);
         res.json({ success: true, data: school });

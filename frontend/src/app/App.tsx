@@ -16,12 +16,15 @@ import CashierPage from "@/features/cashier/CashierPage";
 import ReportsPage from "@/features/reports/ReportsPage";
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
 import { PermissionRoute } from "@/routes/PermissionRoute";
-import { Navigate, BrowserRouter, Route, Routes } from "react-router-dom";
+import { Navigate, HashRouter, BrowserRouter, Route, Routes } from "react-router-dom";
 import { SyncStatus } from "@/components/SyncStatus";
+
+const isPackaged = typeof window !== "undefined" && window.location.protocol === "file:";
+const Router = isPackaged ? HashRouter : BrowserRouter;
 
 export function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/login" element={<LoginPage />} />
@@ -48,6 +51,6 @@ export function App() {
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
       <SyncStatus />
-    </BrowserRouter>
+    </Router>
   );
 }

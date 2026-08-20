@@ -5,7 +5,7 @@ const prisma_1 = require("../../../config/prisma");
 exports.studentRepository = {
     async list(query, scope) {
         const where = {
-            schoolId: query.schoolId,
+            ...(query.schoolId ? { schoolId: query.schoolId } : {}),
             classRoomId: query.classRoomId,
             status: query.status,
             ...scope,

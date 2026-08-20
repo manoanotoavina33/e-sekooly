@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { formatCurrency } from "@/lib/utils";
 import {
   ArrowUpRight,
@@ -35,8 +35,7 @@ import {
 import { downloadReceiptPdf } from "@/features/finance/payments/hooks/usePayments";
 
 export default function CashierPage() {
-  const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
 
   const { data: registers, isLoading: registersLoading } = useCashRegisters(schoolId);
   const { data: feeCategories } = useFeeCategories(schoolId);

@@ -15,6 +15,7 @@ export const schoolRouter = Router();
 
 schoolRouter.use(authenticate);
 
+schoolRouter.get("/", authorize("settings.read"), schoolController.list);
 schoolRouter.get("/:id", authorize("settings.read"), schoolController.getById);
 schoolRouter.patch("/:id", authorize("settings.manage"), validateBody(updateSchoolSchema), schoolController.update);
 schoolRouter.post("/:id/upload-logo", authorize("settings.manage"), upload.single("logo"), schoolController.uploadLogo);

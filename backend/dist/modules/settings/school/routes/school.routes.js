@@ -10,6 +10,7 @@ const school_validation_1 = require("../validations/school.validation");
 const upload_1 = require("../../../../core/middlewares/upload");
 exports.schoolRouter = (0, express_1.Router)();
 exports.schoolRouter.use(authenticate_1.authenticate);
+exports.schoolRouter.get("/", (0, authorize_1.authorize)("settings.read"), school_controller_1.schoolController.list);
 exports.schoolRouter.get("/:id", (0, authorize_1.authorize)("settings.read"), school_controller_1.schoolController.getById);
 exports.schoolRouter.patch("/:id", (0, authorize_1.authorize)("settings.manage"), (0, validate_1.validateBody)(school_validation_1.updateSchoolSchema), school_controller_1.schoolController.update);
 exports.schoolRouter.post("/:id/upload-logo", (0, authorize_1.authorize)("settings.manage"), upload_1.upload.single("logo"), school_controller_1.schoolController.uploadLogo);

@@ -7,6 +7,10 @@ import {
 } from "../validations/school.validation";
 
 export const schoolService = {
+  async list() {
+    return schoolRepository.list();
+  },
+
   async getById(id: string) {
     const school = await schoolRepository.findById(id);
     if (!school) throw new NotFoundError("École");

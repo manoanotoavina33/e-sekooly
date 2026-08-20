@@ -4,6 +4,9 @@ exports.schoolService = void 0;
 const AppError_1 = require("../../../../core/errors/AppError");
 const school_repository_1 = require("../repositories/school.repository");
 exports.schoolService = {
+    async list() {
+        return school_repository_1.schoolRepository.list();
+    },
     async getById(id) {
         const school = await school_repository_1.schoolRepository.findById(id);
         if (!school)

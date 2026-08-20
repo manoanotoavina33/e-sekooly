@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { cn } from "@/lib/utils";
 import { Download, Edit, Megaphone, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -18,8 +18,7 @@ const AUDIENCE_LABELS: Record<string, string> = {
 };
 
 export default function CommunicationPage() {
-  const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const [tab, setTab] = useState<"inbox" | "sent" | "announcements">("inbox");
   const [composeOpen, setComposeOpen] = useState(false);
   const [announcementOpen, setAnnouncementOpen] = useState(false);

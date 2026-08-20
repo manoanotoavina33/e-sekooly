@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { useClassRooms } from "@/features/academics/classrooms/hooks/useClassRooms";
 import { Download, Edit, Plus, Trash2, Upload } from "lucide-react";
 import { useState } from "react";
@@ -12,7 +13,7 @@ import { Student, useDeleteStudent, useStudents } from "./hooks/useStudents";
 
 export default function StudentsPage() {
   const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
 
   // Dynamic authorization check: ADMIN or SUPER_ADMIN or users with 'students.manage' / 'students.create'
   const isUserAdmin = user?.roles.some((r) =>

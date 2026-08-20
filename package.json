@@ -1,0 +1,57 @@
+{
+  "name": "e-sekooly-desktop",
+  "version": "1.0.0",
+  "description": "Application autonome de gestion scolaire",
+  "main": "main.js",
+  "scripts": {
+    "build:frontend": "cd frontend && npm run build",
+    "electron:start": "frontend/node_modules/.bin/electron .",
+    "pack": "electron-builder --dir",
+    "dist": "npm run build:frontend && npm run build:backend && electron-builder",
+    "build:backend": "cd backend && npm run build",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"wait-on http://localhost:4000/api/health http://localhost:5173 && npm run electron:start\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "electron": "^43.4.0",
+    "electron-builder": "^26.15.3",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.esechooly.app",
+    "productName": "e-sekooly",
+    "files": [
+      "main.js",
+      "frontend/dist/**/*",
+      "backend/dist/**/*",
+      "backend/uploads/**/*",
+      "backend/prisma/**/*",
+      "backend/.env"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/dist",
+        "to": "backend/dist"
+      },
+      {
+        "from": "backend/uploads",
+        "to": "backend/uploads"
+      },
+      {
+        "from": "backend/.env",
+        "to": "backend/.env"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "frontend/public/logo.svg"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "frontend/public/logo.svg"
+    }
+  }
+}

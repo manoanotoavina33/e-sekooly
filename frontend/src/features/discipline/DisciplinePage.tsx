@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useStudents } from "@/features/students/hooks/useStudents";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -23,8 +23,7 @@ const TYPE_STYLES: Record<DisciplineType, string> = {
 };
 
 export default function DisciplinePage() {
-  const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const { data: studentsData } = useStudents({ schoolId, pageSize: 100 });
   const [studentId, setStudentId] = useState("");
   const { data: records, isLoading } = useDisciplineRecords(schoolId, studentId || undefined);

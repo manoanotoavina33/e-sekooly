@@ -2,7 +2,7 @@ import { useSchool } from "@/features/settings/hooks/useSchoolSettings";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useStudents } from "@/features/students/hooks/useStudents";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useEffectiveSchoolId } from "@/hooks/useEffectiveSchoolId";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -27,8 +27,7 @@ const EXAM_TYPE_FILTER: Record<string, string[]> = {
 };
 
 export default function ExaminationsPage() {
-  const user = useAuthStore((s) => s.user);
-  const schoolId = user?.schoolId ?? "";
+  const schoolId = useEffectiveSchoolId();
   const [tab, setTab] = useState<"sessions" | "grades" | "reportcards">("sessions");
 
   const { data: school } = useSchool(schoolId);

@@ -25,7 +25,7 @@ exports.suspendStudentSchema = zod_1.z.object({
     type: zod_1.z.enum(["SUSPENSION", "EXCLUSION"]),
 });
 exports.listStudentsQuerySchema = zod_1.z.object({
-    schoolId: zod_1.z.string().uuid(),
+    schoolId: zod_1.z.string().uuid().optional(),
     classRoomId: zod_1.z.string().uuid().optional(),
     status: zod_1.z.enum(["ACTIVE", "SUSPENDED", "EXCLUDED", "GRADUATED", "TRANSFERRED", "ARCHIVED"]).optional(),
     search: zod_1.z.string().optional(),
