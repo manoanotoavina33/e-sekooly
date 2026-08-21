@@ -8,13 +8,13 @@ interface LogoProps {
 }
 
 /**
- * Logo e-sekooly. L'image pointe vers /public/logo.svg — remplacez ce
+ * Logo e-sekooly. L'image pointe vers /public/logo.png — remplacez ce
  * fichier par votre propre logo, aucun changement de code n'est nécessaire.
  */
 export function Logo({ className, withLabel = true, size = 36, src }: LogoProps) {
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
-      <img src={src ?? "/logo.svg"} alt="e-sekooly" width={size} height={size} className="rounded-xl shadow-soft" />
+      <img src={src ?? "/logo.png"} alt="e-sekooly" width={size} height={size} className="rounded-xl shadow-soft" />
       {withLabel && (
         <span className="font-display text-lg font-bold tracking-tight text-sky-900 dark:text-white">
           e-sekooly

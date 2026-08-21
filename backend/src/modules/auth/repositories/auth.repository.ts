@@ -119,7 +119,7 @@ export const authRepository = {
         userId: params.userId ?? undefined,
         action: params.action,
         ipAddress: params.ipAddress,
-        metadata: params.metadata as never,
+        metadata: params.metadata ? JSON.stringify(params.metadata) : "{}",
       },
     });
   },

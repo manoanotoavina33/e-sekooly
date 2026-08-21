@@ -90,8 +90,12 @@ exports.io.on("connection", (socket) => {
     });
 });
 ensureDatabase().then(() => {
-    httpServer.listen(env_1.env.port, () => {
+    const server = httpServer.listen(env_1.env.port, () => {
         console.log(`✅ e-sekooly API démarrée sur http://localhost:${env_1.env.port}`);
+    });
+    server.on("error", (err) => {
+        console.error("❌ Erreur lors du démarrage du serveur:", err.message);
+        process.exit(1);
     });
 }).catch((err) => {
     console.error("❌ Erreur critique au démarrage:", err);

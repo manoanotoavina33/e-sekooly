@@ -30,6 +30,14 @@ function loadBackendEnv() {
   }
 }
 
+function ensureBundledDatabase() {
+  const dbPath = path.join(process.resourcesPath, "backend", "dev.db");
+  if (!process.env.DATABASE_URL) {
+    process.env.DATABASE_URL = `file:${dbPath}`;
+    console.log("Base de données backend forcée vers:", dbPath);
+  }
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     title: "e-sekooly",
@@ -83,6 +91,7 @@ async function startBackend() {
 
   try {
     loadBackendEnv();
+    ensureBundledDatabase();
     const backendPath = path.join(process.resourcesPath, "backend", "dist", "app.js");
     console.log("Démarrage backend intégré:", backendPath);
     const { createApp } = await import(backendPath);

@@ -42,12 +42,17 @@ async function waitForBackend(url, timeout = 30000) {
 }
 
 function createWindow() {
+  const iconPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'frontend', 'dist', 'favicon.ico')
+    : path.join(__dirname, 'frontend', 'public', 'favicon.ico');
+
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
     minWidth: 1024,
     minHeight: 700,
     title: 'e-sekooly',
+    icon: iconPath,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true
@@ -93,6 +98,10 @@ function startBackend() {
       }
     }
 
+    const frontendDist = app.isPackaged
+      ? path.join(process.resourcesPath, 'frontend', 'dist')
+      : path.join(__dirname, 'frontend', 'dist');
+
     const env = {
       ...process.env,
       NODE_ENV: 'production',
@@ -103,6 +112,8 @@ function startBackend() {
       JWT_ACCESS_EXPIRES_IN: '15m',
       JWT_REFRESH_EXPIRES_DAYS: '30',
       CORS_ORIGIN: '*',
+      SERVE_FRONTEND: 'true',
+      FRONTEND_DIST: frontendDist,
     };
 
     backendProcess = spawn('node', [serverPath], {
@@ -181,7 +192,10 @@ app.whenReady().then(async () => {
   }
 
   if (isPackaged) {
-    mainWindow.loadFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+    // Le backend sert le frontend compilé depuis la même origine
+    // (http://localhost:4000) en mode offline, ce qui permet au cookie de
+    // rafraîchissement (Secure) d'être correctement transmis.
+    mainWindow.loadURL('http://localhost:4000');
   } else {
     mainWindow.loadURL('http://localhost:5173');
   }

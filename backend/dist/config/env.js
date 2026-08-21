@@ -20,5 +20,7 @@ exports.env = {
         refreshExpiresInDays: Number(process.env.JWT_REFRESH_EXPIRES_IN_DAYS ?? 30),
     },
     corsOrigin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
+    serveFrontend: process.env.SERVE_FRONTEND === "true",
+    frontendDist: process.env.FRONTEND_DIST ?? "",
 };
 //# sourceMappingURL=env.js.map

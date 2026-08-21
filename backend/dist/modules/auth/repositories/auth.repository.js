@@ -95,7 +95,7 @@ exports.authRepository = {
                 userId: params.userId ?? undefined,
                 action: params.action,
                 ipAddress: params.ipAddress,
-                metadata: params.metadata,
+                metadata: params.metadata ? JSON.stringify(params.metadata) : "{}",
             },
         });
     },

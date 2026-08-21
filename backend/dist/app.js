@@ -91,6 +91,20 @@ function createApp() {
     app.use("/api/sync", sync_routes_1.syncRouter);
     app.use("/api/users", user_routes_1.userRouter);
     app.use("/uploads", express_1.default.static(path_1.default.join(process.cwd(), "uploads")));
+    // En mode "offline" (Electron), le backend sert aussi le frontend compilé
+    // depuis la même origine (http://localhost:4000). Cela évite le problème de
+    // cookie `Secure` non transmis entre une origine `file://` et le backend en
+    // HTTP, et conserve le modèle de cookie httpOnly/sécurisé.
+    if (env_1.env.serveFrontend && env_1.env.frontendDist) {
+        const distDir = env_1.env.frontendDist;
+        app.use(express_1.default.static(distDir));
+        app.use((req, res, next) => {
+            if (req.method === "GET" && !req.path.startsWith("/api") && !req.path.startsWith("/uploads")) {
+                return res.sendFile(path_1.default.join(distDir, "index.html"));
+            }
+            next();
+        });
+    }
     app.use(errorHandler_1.notFoundHandler);
     app.use(errorHandler_1.errorHandler);
     return app;

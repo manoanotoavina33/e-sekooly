@@ -22,10 +22,13 @@
     "appId": "com.esechooly.app",
     "productName": "e-sekooly",
     "files": [
-      "main.js",
-      "frontend/dist/**/*"
+      "main.js"
     ],
     "extraResources": [
+      {
+        "from": "frontend/dist",
+        "to": "frontend/dist"
+      },
       {
         "from": "backend/dist",
         "to": "backend/dist"
@@ -55,15 +58,16 @@
       "backend/node_modules/**/*"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "frontend/public/favicon.ico"
     },
     "mac": {
       "target": "dmg",
-      "icon": "frontend/public/logo.svg"
+      "icon": "frontend/public/logo.png"
     },
     "linux": {
       "target": "AppImage",
-      "icon": "frontend/public/logo.svg"
+      "icon": "frontend/public/logo.png"
     }
   }
 }
