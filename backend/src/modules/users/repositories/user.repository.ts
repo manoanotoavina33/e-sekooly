@@ -1,4 +1,4 @@
-import { Prisma, RoleName } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../../../config/prisma";
 import bcrypt from "bcryptjs";
 import { CreateUserInput, ListUsersQuery, UpdateUserInput } from "../validations/user.validation";
@@ -8,14 +8,14 @@ export const userRepository = {
     const where: Prisma.UserWhereInput = {};
     if (query.schoolId) where.schoolId = query.schoolId;
     if (query.role) {
-      where.roles = { some: { role: { name: query.role as RoleName } } };
+      where.roles = { some: { role: { name: query.role } } };
     }
     if (query.search) {
       const q = query.search.toLowerCase();
       where.OR = [
-        { firstName: { contains: q, mode: "insensitive" } },
-        { lastName: { contains: q, mode: "insensitive" } },
-        { email: { contains: q, mode: "insensitive" } },
+        { firstName: { contains: q } },
+        { lastName: { contains: q } },
+        { email: { contains: q } },
       ];
     }
     return prisma.user.findMany({

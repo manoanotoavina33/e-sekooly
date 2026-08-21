@@ -16,7 +16,7 @@ import {
  */
 async function assertNoConflict(params: {
   schoolId: string;
-  dayOfWeek: CreateTimetableSlotInput["dayOfWeek"];
+  dayOfWeek: string;
   startTime: string;
   endTime: string;
   classRoomId: string;
@@ -70,7 +70,7 @@ export const timetableService = {
 
     await assertNoConflict({
       schoolId: existing.schoolId,
-      dayOfWeek: input.dayOfWeek ?? existing.dayOfWeek,
+      dayOfWeek: input.dayOfWeek ?? (existing.dayOfWeek as string),
       startTime: input.startTime ?? existing.startTime,
       endTime: input.endTime ?? existing.endTime,
       classRoomId: existing.classRoomId,

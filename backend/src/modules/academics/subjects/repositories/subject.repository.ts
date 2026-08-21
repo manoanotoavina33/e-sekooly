@@ -7,7 +7,7 @@ export const subjectRepository = {
     const where: Prisma.SubjectWhereInput = {
       schoolId: query.schoolId,
       ...scope,
-      ...(query.search ? { name: { contains: query.search, mode: "insensitive" } } : {}),
+      ...(query.search ? { name: { contains: query.search } } : {}),
     };
     return prisma.subject.findMany({ where, orderBy: { name: "asc" } });
   },

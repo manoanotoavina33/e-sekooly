@@ -12,9 +12,9 @@ exports.studentRepository = {
             ...(query.search
                 ? {
                     OR: [
-                        { firstName: { contains: query.search, mode: "insensitive" } },
-                        { lastName: { contains: query.search, mode: "insensitive" } },
-                        { registrationNo: { contains: query.search, mode: "insensitive" } },
+                        { firstName: { contains: query.search } },
+                        { lastName: { contains: query.search } },
+                        { registrationNo: { contains: query.search } },
                     ],
                 }
                 : {}),

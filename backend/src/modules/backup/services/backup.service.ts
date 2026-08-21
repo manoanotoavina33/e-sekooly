@@ -38,7 +38,7 @@ export const backupService = {
         status: "COMPLETED",
         fileName,
         sizeBytes,
-        modelCounts: counts,
+        modelCounts: JSON.stringify(counts),
         completedAt: new Date(),
       });
 

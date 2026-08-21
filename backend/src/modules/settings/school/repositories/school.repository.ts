@@ -1,4 +1,4 @@
-import { Prisma, SchoolType } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../../../../config/prisma";
 
 export const schoolRepository = {
@@ -26,7 +26,7 @@ export const schoolRepository = {
   async setSchoolTypes(schoolId: string, types: string[]) {
     await prisma.schoolSchoolCategory.deleteMany({ where: { schoolId } });
     const categories = await prisma.schoolCategory.findMany({
-      where: { code: { in: types as SchoolType[] } },
+      where: { code: { in: types } },
     });
     await prisma.schoolSchoolCategory.createMany({
       data: categories.map((cat) => ({ schoolId, schoolTypeId: cat.id })),

@@ -17,9 +17,9 @@ exports.userRepository = {
         if (query.search) {
             const q = query.search.toLowerCase();
             where.OR = [
-                { firstName: { contains: q, mode: "insensitive" } },
-                { lastName: { contains: q, mode: "insensitive" } },
-                { email: { contains: q, mode: "insensitive" } },
+                { firstName: { contains: q } },
+                { lastName: { contains: q } },
+                { email: { contains: q } },
             ];
         }
         return prisma_1.prisma.user.findMany({

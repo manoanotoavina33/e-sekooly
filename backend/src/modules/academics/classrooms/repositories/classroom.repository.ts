@@ -7,7 +7,7 @@ export const classRoomRepository = {
     const where: Prisma.ClassRoomWhereInput = {
       schoolId: query.schoolId,
       ...scope,
-      ...(query.search ? { name: { contains: query.search, mode: "insensitive" } } : {}),
+      ...(query.search ? { name: { contains: query.search } } : {}),
     };
     return prisma.classRoom.findMany({
       where,

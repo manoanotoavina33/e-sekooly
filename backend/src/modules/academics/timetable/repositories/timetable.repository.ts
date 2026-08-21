@@ -1,4 +1,4 @@
-import { Prisma, Weekday } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../../../../config/prisma";
 import { ListTimetableQuery } from "../validations/timetable.validation";
 
@@ -25,14 +25,9 @@ export const timetableRepository = {
     return prisma.timetableSlot.findUnique({ where: { id } });
   },
 
-  /**
-   * Recherche tout créneau existant qui chevauche (jour + plage horaire) et
-   * qui concerne le même enseignant, la même classe OU la même salle —
-   * utilisé par le service pour la détection de conflits avant écriture.
-   */
   findOverlapping(params: {
     schoolId: string;
-    dayOfWeek: Weekday;
+    dayOfWeek: string;
     startTime: string;
     endTime: string;
     classRoomId: string;
@@ -45,7 +40,6 @@ export const timetableRepository = {
         schoolId: params.schoolId,
         dayOfWeek: params.dayOfWeek,
         id: params.excludeId ? { not: params.excludeId } : undefined,
-        // chevauchement d'intervalles : start < otherEnd AND end > otherStart
         startTime: { lt: params.endTime },
         endTime: { gt: params.startTime },
         OR: [

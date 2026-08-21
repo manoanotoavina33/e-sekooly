@@ -37,7 +37,7 @@ export const cashTransactionController = {
 
     streamCashReceiptPdf(res, query.format, {
       receiptNo: transaction.receiptNo,
-      type: transaction.type,
+      type: transaction.type as "IN" | "OUT",
       amount: transaction.amount,
       category: transaction.category,
       description: transaction.description,

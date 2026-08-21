@@ -10,10 +10,10 @@ exports.employeeRepository = {
             ...(query.search
                 ? {
                     OR: [
-                        { position: { contains: query.search, mode: "insensitive" } },
-                        { employeeNo: { contains: query.search, mode: "insensitive" } },
-                        { user: { firstName: { contains: query.search, mode: "insensitive" } } },
-                        { user: { lastName: { contains: query.search, mode: "insensitive" } } },
+                        { position: { contains: query.search } },
+                        { employeeNo: { contains: query.search } },
+                        { user: { firstName: { contains: query.search } } },
+                        { user: { lastName: { contains: query.search } } },
                     ],
                 }
                 : {}),

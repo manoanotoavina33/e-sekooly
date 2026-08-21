@@ -5,10 +5,11 @@
   "main": "main.js",
   "scripts": {
     "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "build:offline": "node scripts/build-offline.js",
     "electron:start": "frontend/node_modules/.bin/electron .",
     "pack": "electron-builder --dir",
-    "dist": "npm run build:frontend && npm run build:backend && electron-builder",
-    "build:backend": "cd backend && npm run build",
+    "dist": "npm run build:offline && npm run build:frontend && npm run build:backend && electron-builder",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"wait-on http://localhost:4000/api/health http://localhost:5173 && npm run electron:start\""
   },
   "devDependencies": {
@@ -22,11 +23,7 @@
     "productName": "e-sekooly",
     "files": [
       "main.js",
-      "frontend/dist/**/*",
-      "backend/dist/**/*",
-      "backend/uploads/**/*",
-      "backend/prisma/**/*",
-      "backend/.env"
+      "frontend/dist/**/*"
     ],
     "extraResources": [
       {
@@ -34,13 +31,28 @@
         "to": "backend/dist"
       },
       {
+        "from": "backend/node_modules",
+        "to": "backend/node_modules"
+      },
+      {
+        "from": "backend/prisma",
+        "to": "backend/prisma"
+      },
+      {
         "from": "backend/uploads",
         "to": "backend/uploads"
       },
       {
-        "from": "backend/.env",
-        "to": "backend/.env"
+        "from": "backend/package.json",
+        "to": "backend/package.json"
+      },
+      {
+        "from": "backend/dev.db",
+        "to": "backend/dev.db"
       }
+    ],
+    "asarUnpack": [
+      "backend/node_modules/**/*"
     ],
     "win": {
       "target": "nsis"

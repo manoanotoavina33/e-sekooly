@@ -23,18 +23,12 @@ exports.timetableRepository = {
     findById(id) {
         return prisma_1.prisma.timetableSlot.findUnique({ where: { id } });
     },
-    /**
-     * Recherche tout créneau existant qui chevauche (jour + plage horaire) et
-     * qui concerne le même enseignant, la même classe OU la même salle —
-     * utilisé par le service pour la détection de conflits avant écriture.
-     */
     findOverlapping(params) {
         return prisma_1.prisma.timetableSlot.findMany({
             where: {
                 schoolId: params.schoolId,
                 dayOfWeek: params.dayOfWeek,
                 id: params.excludeId ? { not: params.excludeId } : undefined,
-                // chevauchement d'intervalles : start < otherEnd AND end > otherStart
                 startTime: { lt: params.endTime },
                 endTime: { gt: params.startTime },
                 OR: [
